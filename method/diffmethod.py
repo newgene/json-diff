@@ -18,7 +18,7 @@ class GeneIdLst():
 class GeneId():
     def __init__(self, last_lst, new_lst):
         self.last_lst = last_lst
-        self.new_lst = last_lst
+        self.new_lst = new_lst
 
     def addGeneId(self):       #compare the two lists of gene id, return the id list that had been added
         add_gene_id = set(self.new_lst) - set(self.last_lst)
