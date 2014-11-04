@@ -34,11 +34,11 @@ class OptLst()
         self.lst2 = lst2
             
     def addLst(self):  
-        add = set(self.lst2) - set(self.lst1)
+        add = set(self.lst2).difference(set(self.lst1))
         return add
         
     def shareLst(self):
-        share = set(self.lst2) & set(self.lst1)
+        share = set(self.lst2).intersection(set(self.lst1))
         return share
         
     def delLst(self):           #some elements is in lst2,but is not in lst2. Be deleted form lst2
