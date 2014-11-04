@@ -13,41 +13,28 @@ class GeneIdLst():
         id_num_lst.append(self.gene_dict['_id'])
         return id_num_lst
 
-#option about db id
 
-class GeneId():
-    def __init__(self, last_lst, new_lst):
-        self.last_lst = last_lst
-        self.new_lst = new_lst
 
-    def addGeneId(self):       #compare the two lists of gene id, return the id list that had been added
-        add_gene_id = set(self.new_lst) - set(self.last_lst)
-        return list(add_gene_id)
-
-    def sharedGeneId(self):     #return the shared id in two lists of gene id
-        shared_gene_id = set(self.new_lst) & set(self.last_lst)
-        return list(shared_gene_id)
-
-class OptLst()
+class OptLst():
     def __init__(self, lst1, lst2):
         self.lst1 = lst1
         self.lst2 = lst2
             
     def addLst(self):  
         add = set(self.lst2).difference(set(self.lst1))
-        return add
+        return list(add)
         
     def shareLst(self):
         share = set(self.lst2).intersection(set(self.lst1))
-        return share
+        return list(share)
         
-    def delLst(self):           #some elements is in lst2,but is not in lst2. Be deleted form lst2
-        del = set(self.lst1) - self.shareLst()
-        return del
+    def deleLst(self):           #some elements is in lst1,but is not in lst2. Be deleted form lst2
+        dele = set(self.lst1).difference(self.shareLst())
+        return list(dele)
 
 #compare the dictionary
 
-class CompareDicts():
+class CompareDicts(OptLst):
     def __init__(self, last_dict, new_dict):
         self.last_dict = last_dict
         self.last_key = [ k for k in last_dict ]
@@ -55,19 +42,22 @@ class CompareDicts():
         self.new_dict = new_dict
         self.new_key = [ k for k in new_dict ]
 
-    def addKey(self):    #return the key of new dictionary that had been added 
-        add_key = [ ele for ele in self.new_dict if ele not in self.last_dict ]
-        return add_key
+        OptLst.__init__(self,self.last_key,self.new_key)
+    
+    def takeKV(self,key,where=2):     #where=2--object is self.new_dict; where=1--object is self.last_dict
+        take_dict = {}
+        if where==2:
+            take_dict[key] = self.new_dict[key]
+        else:
+            take_dict[key] = self.last_dict[key]
 
-    def delKey(self):    #return the key of new dictionary that had been deleted
-        del_key = [ ele for ele in self.last_dict if els not in self.new_dict ]
-        return del_key
+        return take_dict
 
-    def updateKey(self):    #return the keys list of update that is in new dictionary
-        add_key = self.addKey()
-        shared_key = set(self.new_dict.keys()) - set(add_key)
-        update_key = [ k for k in shared_key if self.new_dict[k] != self.last_dict[k] ]
-        return list(update_key)
+    def updateDict(self,k):
+        if self.new_dict[k] != self.last_dict[k]:
+            return self.new_dict
+        else:
+            return [] 
        
 class ResultDict():
     def __init__(self, key_list, one_dict):
