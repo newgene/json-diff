@@ -40,6 +40,10 @@ class OptLst()
     def shareLst(self):
         share = set(self.lst2) & set(self.lst1)
         return share
+        
+    def delLst(self):           #some elements is in lst2,but is not in lst2. Be deleted form lst2
+        del = set(self.lst1) - self.shareLst()
+        return del
 
 #compare the dictionary
 
