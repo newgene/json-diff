@@ -37,11 +37,11 @@ class CompareDicts():
         self.new_dict = new_dict
 
     def addKey(self):    #return the key of new dictionary that had been added 
-        add_key = [ ele for ele in self.new_dict.keys() if ele not in self.last_dict ]
+        add_key = [ ele for ele in self.new_dict if ele not in self.last_dict ]
         return add_key
 
     def delKey(self):    #return the key of new dictionary that had been deleted
-        del_key = [ ele for ele in self.last_dict.keys() if els not in self.new_dict ]
+        del_key = [ ele for ele in self.last_dict if els not in self.new_dict ]
         return del_key
 
     def updateKey(self):    #return the keys list of update that is in new dictionary
