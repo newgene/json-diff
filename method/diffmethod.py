@@ -28,13 +28,28 @@ class GeneId():
         shared_gene_id = set(self.new_lst) & set(self.last_lst)
         return list(shared_gene_id)
 
+class OptLst()
+    def __init__(self, lst1, lst2):
+        self.lst1 = lst1
+        self.lst2 = lst2
+            
+    def addLst(self):  
+        add = set(self.lst2) - set(self.lst1)
+        return add
+        
+    def shareLst(self):
+        share = set(self.lst2) & set(self.lst1)
+        return share
 
 #compare the dictionary
 
 class CompareDicts():
     def __init__(self, last_dict, new_dict):
         self.last_dict = last_dict
+        self.last_key = [ k for k in last_dict ]
+        
         self.new_dict = new_dict
+        self.new_key = [ k for k in new_dict ]
 
     def addKey(self):    #return the key of new dictionary that had been added 
         add_key = [ ele for ele in self.new_dict if ele not in self.last_dict ]
