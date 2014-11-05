@@ -4,6 +4,8 @@
 import datetime
 import json
 
+from dboption.mongodb import *
+
 class InOutFile():
     def __init__(self, filedir):
         self.filedir = filedir
@@ -25,3 +27,10 @@ class InOutFile():
             f.close()
         return content
 
+class SaveDb():
+    def __init__(self, docname):
+        self.docname = docname
+
+    def insertDb(self, content, key):
+        if content:
+            self.docname.insert({key:content})
