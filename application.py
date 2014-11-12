@@ -8,12 +8,13 @@ from dboption.mongodb import *
 
 import json
 import datetime
-from bintrees import BinaryTree
+import time
 
 #避免出现乱码
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
+
 
 def diff():
 
@@ -32,36 +33,37 @@ def diff():
     if add_gene:
         for i in add_gene:
             one_gene = newdb.find_one({"_id":i})
-            db_add.insert({"gene_id":i,"content":one_gene})
+            db_change.insert({"gene_id":i,"changes":[{"stat":"add","content":one_gene}],"lastdb":last_date,"newdb":new_date})
  
     #将新集合中已经删除的基因插入数据库        
     if deleted_gene:
         for i in deleted_gene:
             one_gene = lastdb.find_one({"_id":i})
-            db_del.insert({"gene_id":i,"content":one_gene})
+            db_change.insert({"gene_id":i,"changes":[{"stat":"delete"}],"lastdb":last_date,"newdb":new_date})
 
     #将新集合中原有的基因中，做了部分修改的基因插入数据库
     if shared_gene:
         for i in shared_gene:
             last_content = lastdb.find_one({"_id":i},{"_id":0})
             new_content = newdb.find_one({"_id":i},{"_id":0})
+
+            add_element = dict([ (k,v) for k,v in new_content.iteritems() if not any(k in dd for dd in last_content) ])
+            del_element = dict([ (k,v) for k,v in last_content.iteritems() if any(k in dd for dd in new_content) ])
+            upd_element = dict([ (k,v) for k,v in new_content.iteritems() if any(k in dd for dd in last_content) and last_content.get(k)!=v ])
+            changes_value = []
+            if add_element:
+                add_element["stat"] = "u_add"       #有更新的基因中增加了基因的key-value
+                changes_value.append(add_element)
+            if del_element:
+                del_element['stat'] = "u_del"       #有更新的基因中删除了基因的key-value
+                changes_value.append(del_element)
+            if upd_element:
+                upd_element['stat'] = 'u_upd'       #有更新的基因中修改了基因的key-value
+                changes_value.append(upd_element)
             
-            last_tree, new_tree = BinaryTree(), BinaryTree()
-            last_tree.update(last_content)
-            new_tree.update(new_content)
-            
-            add_content = new_tree.__sub__(last_tree)
-            del_content = last_tree.__sub__(new_tree)
-            and_content = new_tree.__and__(last_tree)
-            
-            if add_content:
-                db_upd.insert({"gene_id":i,"status":"add","content":dict(add_content)})
-            if del_content:
-                db_upd.insert({"gene_id":i,"status":"delete","content":dict(del_content)})
-            if and_content:
-                for k in and_content:
-                    if and_content[k] != last_tree[k]:
-                        db_upd.insert({"gene_id":i,"status":"update","content":{k:and_content[k]}})
+            if changes_value: 
+                db_change.insert({"gene_id":i, "changes":changes_value, "lastdb":last_date, "newdb":new_date })
+
 
 def main():
     print "I am working. You can have a rest, drink tea or others. You will come back some minutes later."
@@ -70,4 +72,7 @@ def main():
 
 
 if __name__=="__main__":
+    start = time.clock()
     main()
+    print "I have spent time:"
+    print (time.clock() - start)
