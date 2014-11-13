@@ -11,35 +11,34 @@
 
 mongodb数据库
 
-Database Name:genetest
+Database Name: genetest
+
+collection: genechange
 
 其中所包含的collection有：
 
-###genedoc_mygene_20141026_g6svo5ct
 
-即将比较的数据，与下面的数据相比
+存储格式举例：{"gene_id":"12079","lastdb":"20141019", "newdb":"20141026", "changes" : [{"stat":"u_replace","value":{...}}]}
 
-###genedoc_mygene_20141019_efqag2hg
+说明：
+- "gene_id"：该基因在新库中的id
+- "lastdb"：就数据日期
+- "newdb"：新数据日期
+- "changes"：变化了的值
+- changes的值为list，其中的元素为dictionary，每个dict是该基因的一个变化内容。
 
-参与比较的数据 
+changes的值的结构说明：
 
-###genedoc_add
+- "stat"：其值表明本元素内容的变化性质。
 
-新数据相对旧数据，新增加的基因id以及内容。
+    "new_gene"表示这是一条新增加的基因;
+    "delete"表示这个基因在新库中被删除；
+    "u_replace"表示这部分内容被替换(更新update)；
+    "u_add"表示这部分内容是本条基因中新增加的；
+    "u_remove"表示这部分内容在新库中的该条基因中已被删除；
 
-存储格式：{"gene_id":"该基因在新数据中的id","content":"该基因的完整内容"}
+- "value"：表示相应发生变化的部分内容。对于新增加的基因，是该基因的全部内容；对于删除的基因，没有这个键值对；对于已有基因，是变化那部分的最底层的值，并且从json最高层到最底层的key都列出来。
 
-###genedoc_del
-
-新数据相对旧数据，已经删除基因id以及内容。
-
-存储格式：{"gene_id":"该基因在旧数据中的id","content":"该基因的完整内容"}
-
-###genedoc_upd
-
-新数据相对就数据，基因id没有变化，但是具体的基因内容有变化（删除、新增、修改）的部分
-
-存储格式：{"gene_id":"该基因在新（旧）数据中的id","status":"内容变化属性:delete,add,update","content":"发生变化的那部分内容"}
 
 ##开发环境
 
