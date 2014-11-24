@@ -5,6 +5,7 @@
 ##应用依赖
 
 - python 2.7
+- json_tools
 
 ##数据库配置说明
 
@@ -14,34 +15,10 @@ Database Name: genetest
 
 collection: genechange
 
-其中所包含的collection有：
+##使用说明
 
-
-存储格式举例：{"gene_id":"12079","lastdb":"20141019", "newdb":"20141026", "changes" : [{"stat":"u_replace","value":{...}}]}
-
-说明：
-- "gene_id"：该基因在新库中的id
-- "lastdb"：就数据日期
-- "newdb"：新数据日期
-- "changes"：变化了的值
-- changes的值为list，其中的元素为dictionary，每个dict是该基因的一个变化内容。
-
-changes的值的结构说明：
-
-- "stat"：其值表明本元素内容的变化性质。
-
-    "new_gene"表示这是一条新增加的基因;
-    
-    "delete"表示这个基因在新库中被删除；
-    
-    "u_replace"表示这部分内容被替换(更新update)；
-    
-    "u_add"表示这部分内容是本条基因中新增加的；
-    
-    "u_remove"表示这部分内容在新库中的该条基因中已被删除；
-
-- "value"：表示相应发生变化的部分内容。对于新增加的基因，是该基因的全部内容；对于删除的基因，没有这个键值对；对于已有基因，是变化那部分的最底层的值，并且从json最高层到最底层的key都列出来。
-
+1. 运行`python diff.py`，得到两个库的差别部分，并将其存储到一个名为`genechange`的collection中。
+2. 运行`python merge.py`，将`genechange`中的内容，提交到旧的库中，即将旧库更新。
 
 ##开发环境
 
