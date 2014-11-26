@@ -12,7 +12,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-
+#lastdb,changedb参数
 def merge():
     merge = db_change.find()
     for gene in merge:
