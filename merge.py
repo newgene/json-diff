@@ -13,8 +13,12 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 #lastdb,changedb参数
-def merge():
-    merge = db_change.find()
+def merge(lastdb, diffdb):
+    """
+    lastdb: the old gene database
+    changedb: the database that is the update/newly add/remove parts new gene database relativality old database
+    """
+    merge = diffdb.find()
     for gene in merge:
         if gene["stat"] == "add":
             lastdb.insert(gene["value"])
@@ -30,8 +34,13 @@ def merge():
 def main():
     print ">>>Hi, I am Qiwei. Welcome to my website: www.itdiffer.com<<<"
     print "I am merge the new genes to old gene database."
-    merge()
-    print "ok."
+    
+    lastdb = db.genedoc_mygene_20141019_efqag2hg
+    diffdb = db.genechange      #genechange是存储变更的数据的collection
+
+    merge(lastdb, diffdb)
+    
+    print "ok. I have finished my work."
 
 
 if __name__=="__main__":
