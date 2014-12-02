@@ -12,11 +12,15 @@ import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-#lastdb,changedb参数
+#lastdb,diffdb参数
+#一种情况是导入数据库merge
+#另外一种情况是直接连接数据库导入到新的数据
+#注意，有一个新的genediff_jobs表，根据这个表从genenchanges表中导入新的内容。
+
 def merge(lastdb, diffdb):
     """
     lastdb: the old gene database
-    changedb: the database that is the update/newly add/remove parts new gene database relativality old database
+    diffdb: the database that is the update/newly add/remove parts new gene database relativality old database
     """
     merge = diffdb.find()
     for gene in merge:
