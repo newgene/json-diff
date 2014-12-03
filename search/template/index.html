@@ -1,0 +1,22 @@
+<DOCTYPE html>
+<html>
+<head>
+    <title>Loop in template</title>
+    <link rel="stylesheet" type="text/css" href="{{static_url("css/style.css")}}"/>
+</head>
+<body>
+    <h1>Query Gene</h1>
+    <hr>
+    <br>
+    <div>
+    <form method="post" action="/query">
+    <p><span class='word1'>POS:&nbsp;&nbsp;</span><input style="width:100px;" id="posstart" name="posstart" type="text">&nbsp;-&nbsp;<input style="width:100px;" id="posend" name="posend" type="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class='word1'>CHR:&nbsp;&nbsp;</span><input style="width:50px;" id="genechr" name="genechr" type="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class='word1'>VARTYPE:&nbsp;&nbsp;</span><input style="width:50px;" id="vartype" name="vartype" type="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class='word1'>REF:&nbsp;&nbsp;</span><input style="width:50px;" id="generef" name="generef" type="text"></p>
+    <p><button class="button" id="query" name="query" type="submit"><span style="font-weight:bold;">Search</span></button></p>
+    </form>
+    </div>
+</body>
+</html>
+

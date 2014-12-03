@@ -1,0 +1,542 @@
+/*重置样式表*/
+/* http://meyerweb.com/eric/tools/css/reset/ 
+ *    v2.0 | 20110126
+ *       License: none (public domain)
+ *       */
+
+html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary,time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+        display: block;
+}
+
+
+body {
+        /* standard body */
+        margin: 0 auto;
+        width: 960px;
+        font: 14px/20px "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
+}
+
+
+ol, ul {
+        list-style: none;
+}
+
+blockquote, q {
+        quotes: none;
+}
+blockquote:before, blockquote:after,q:before, q:after {
+        content: '';
+        content: none;
+}
+
+table {
+        border-collapse: collapse;
+        border-spacing: 0;
+}
+
+
+/* Hx tags */
+
+h1 {
+    font-size: 48px;
+    padding: 20px 0;
+    text-shadow: 2px 2px 2px #000;
+    color: #d6a965;
+}
+
+h2 {
+    font-size: 24px;
+    padding: 20px 0;
+}
+
+h3 {
+    font-size: 18px;
+    padding: 10px 0;
+}
+
+
+header, footer, section, aside, nav, article {
+    display: block;
+}
+
+/**
+ 首页登录
+ */
+
+.login_input{
+    height:1.7em;
+}
+
+.word1{
+    position:relative;
+    font-size:24px;
+    color:black;
+    line-height:2em;
+}
+
+
+.error{
+    font: bold 1.4em;
+    color: orange;
+    display: none;
+}
+
+
+#intro {
+    position: relative;
+    margin-top: 1em;
+    padding: 1em 1em 1em 10em;
+    background: #695e53 url("../img/introbkg.png") repeat-x;
+                    
+    /* background size */
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    -khtml-background-size: 100%;
+
+    /* curved border radius */
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+.detail_button{
+    width:7em;
+    padding:0.2em;
+}
+
+.add_button{
+    width:10em;
+    padding:0.2em;
+    font-size:16pt;
+    height:3em;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    color: #008000;
+}
+
+.button{
+    margin-top:10px;
+    margin-left:3.2em;
+    width:12.2em;
+    font:15px Calibri, Arial, sans-serif;
+    /* A semi-transparent text shadow */
+    text-shadow:1px 1px 0 rgba(255,255,255,0.4);
+    /* Overriding the default underline styling of the links */
+    text-decoration:none !important;
+    white-space:nowrap;
+    display:inline-block;
+    vertical-align:baseline;
+    position:relative;
+    cursor:pointer;
+    padding:10px 10px;
+    background-repeat:no-repeat;
+    /* The following two rules are fallbacks, in case
+     *
+     *     the browser does not support multiple backgrounds. */
+    background-position:bottom left;
+    background-image:url('../img/button_bg.png');
+    /* Multiple backgrounds version. The background images
+     *
+     *     are defined individually in color classes */
+    background-position:bottom left, top right, 0 0, 0 0;
+    background-clip:border-box;
+    /* Applying a default border raidus of 8px */
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius:8px;
+    /* A 1px highlight inside of the button */
+    -moz-box-shadow:0 0 1px #fff inset;
+    -webkit-box-shadow:0 0 1px #fff inset;
+    box-shadow:0 0 1px #fff inset;
+    /* Animating the background positions with CSS3 */
+    /* Currently works only in Safari/Chrome */
+    -webkit-transition:background-position 1s;
+    -moz-transition:background-position 1s;
+    transition:background-position 1s;
+}
+
+.button:hover{
+    /* The first rule is a fallback, in case the browser
+    *
+    *     does not support multiple backgrounds
+    *
+    *      */
+    background-position:top left;
+    background-position:top left, bottom right, 0 0, 0 0;
+}
+
+.button:active{
+    /* Moving the button 1px to the bottom when clicked */
+    bottom:-1px;
+}
+
+.button.big{ font-size:20px;}
+
+.gray.button{
+    color:#525252 !important;
+    border:1px solid #a5a5a5 !important;    
+    background-color: #a9adb1;
+    background-image:url('../img/button_bg.png'), url('../img/button_bg.png'), -moz-radial-gradient(center bottom, circle, rgba(197,199,202,1) 0,rgba(197,199,202,0) 100px),-moz-linear-gradient(#c5c7ca, #92989c);
+    background-image:url('../img/button_bg.png'), url('../img/button_bg.png'), -webkit-gradient(radial, 50% 100%, 0, 50% 100%, 100, from(rgba(197,199,202,1)), to(rgba(197,199,202,0))),-webkit-gradient(linear, 0% 0%, 0% 100%, from(#c5c7ca), to(#92989c));
+}
+
+.gray.button:hover{
+    background-color:#b6bbc0;
+    background-image:url('../img/button_bg.png'), url('../img/button_bg.png'), -moz-radial-gradient(center bottom, circle, rgba(202,205,208,1) 0,rgba(202,205,208,0) 100px),-moz-linear-gradient(#d1d3d6, #9fa5a9);
+    background-image:url('../img/button_bg.png'), url('../img/button_bg.png'), -webkit-gradient(radial, 50% 100%, 0, 50% 100%, 100, from(rgba(202,205,208,1)), to(rgba(202,205,208,0))),-webkit-gradient(linear, 0% 0%, 0% 100%, from(#d1d3d6), to(#9fa5a9));
+
+}
+
+/* content*/
+
+#content {
+    position: relative;
+    margin-top: 50px;
+    float: left; 
+    width: 920px; 
+    margin:10px 5px 10px 0; 
+    padding:5px 20px 5px 20px;
+    background-color: #f2ede7;
+    /* curved border radius */
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+
+/* content and sidebar layout */
+
+#innercontent,#innercontent2 {
+    float: left; 
+    width: 920px; 
+    padding:5px 20px 5px 20px;
+    background-color: #d6a965;
+                     
+    /* curved border radius */
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+#innercontent{
+    margin:10px 5px 10px 0; 
+}
+#innercontent2{
+    margin-top:5em;
+    margin-bottom:0.8em;
+}
+
+/* article */
+.articlecontent header p, .blogPost header p a {
+    font-size: 14px;
+    font-style: italic;
+    color: #777;
+}
+
+.articlecontent p a {
+    color: #695e53;
+}
+                                    
+.articlecontent p a:hover {
+    color: #fff;
+}
+                                                    
+.articlecontent header p a:hover {
+    text-decoration: none;
+    color: #000;
+}
+                                                                        
+/* box shadow on pics */
+.articlecontent img {
+    -webkit-box-shadow: 3px 3px 7px #777;
+}
+
+code, pre, #ws, #message {
+    font-family: Monaco;
+    font-size: 10pt;
+    border-radius: 3px;
+    background-color: #F8F8F8;
+    color: inherit;
+}
+
+code {
+    border: 1px solid #EAEAEA;
+    margin: 0 2px;
+    padding: 0 5px;
+}
+
+pre {
+    border: 1px solid #CCCCCC;
+    overflow: auto;
+    padding: 4px 8px;
+}
+
+pre > code {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#ws { background-color: #f8f8f8; }
+
+
+/* footer */
+footer {
+        width: 960px;
+        clear: both;
+        color: #f2ede7;
+        overflow: hidden;
+        padding-top: 10px;
+        background-color: #271408;
+        /* curved border radius */
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        height: 200px;
+        margin-bottom: 10px;
+}
+                                                        
+footer section {
+        width: 300px;
+        float: left;
+        padding: 0 10px;
+        }
+
+footer section h2 {
+        margin-top: 0;
+        }
+
+footer section p {
+        font-size: 12px;
+        }
+
+footer section a {
+        color: #999;
+        }
+                                                                                
+footer section a:hover {
+        color: #FFF;
+        text-decoration: none;
+}
+
+/* nav */
+
+nav {
+    position: absolute;
+    width: 960px;
+    background: url("../img/navbg.png");
+    /* curved border radius */
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+nav ul {
+    margin: 0 auto;
+    width: 960px;
+    list-style: none;
+}
+
+nav ul li {
+    float: left;
+}
+                                                                            
+nav ul li a {
+    display: block;
+    margin-right: 20px;
+    width: 140px;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 44px;
+    text-align: center;
+    text-decoration: none;
+    color: #f2ede7;
+}
+                                                                                                      
+nav ul li a:hover {
+    color: #d6a965;
+}
+                                                                                           
+nav ul li.selected a {
+    color: #d6a965;
+}
+                                                                                  
+nav ul li.subscribe a {
+    margin-left: 20px;
+    padding-left: 33px;
+    text-align: left;
+    background: url("images/rss.png") left center no-repeat;
+}
+
+
+.word_center{
+    text-align:center;
+}
+.font_size1{
+    font-size:1em;
+}
+.font_bold{
+    font-weight:bold;
+}
+
+
+/*
+ *表格样式
+*/
+caption {   
+    padding: 0 0 5px 0;        
+    font: italic 30px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;   
+    text-align: center;   
+}   
+      
+      /*   
+       *     
+       *         TableCloth    
+       *             by Alen Grakalic, brought to you by cssglobe.com  
+       *                   
+       *                   */ /* general styles */  
+table,td {  
+    font: 100% Arial, Helvetica, sans-serif;  
+}  
+        
+table {  
+    width: 100%;  
+    border-collapse: collapse;  
+    margin: 1em 0;  
+}  
+          
+th,td {  
+    text-align: left;  
+    padding: .5em;  
+    border: 1px solid #fff;  
+}  
+            
+th {  
+    background: #328aa4;  
+    color: #fff;  
+}  
+              
+td {  
+    background: #e5f1f4; 
+    word-wrap: break-word;
+    word-break: break-all;
+}  
+                
+/* tablecloth styles */  
+tr.even td {  
+    background: #e5f1f4;  
+}  
+                  
+tr.odd td {  
+    background: #f8fbfc;  
+}  
+                    
+th.over,tr.even th.over,tr.odd th.over {  
+    background: #4a98af;  
+}  
+                      
+th.down,tr.even th.down,tr.odd th.down {  
+    background: #bce774;  
+}  
+                        
+th.selected,tr.even th.selected,tr.odd th.selected {  
+
+}  
+                          
+td.over,tr.even td.over,tr.odd td.over {  
+    background: #ecfbd4;  
+}  
+                            
+td.down,tr.even td.down,tr.odd td.down {  
+    background: #bce774;  
+    color: #fff;  
+}  
+                              
+td.selected,tr.even td.selected,tr.odd td.selected {  
+    background: #bce774;  
+    color: #555;  
+}  
+                                
+/* use this if you want to apply different styleing to empty table cells*/  
+td.empty,tr.odd td.empty,tr.even td.empty {  
+    background: #fff;  
+} 
+
+
+/*this is the Markdown CSS*/
+#markdown h1{
+    margin-top: 0;
+    font-weight: normal;
+}
+
+#markdown h2 {
+    font-weight: normal;
+}
+
+#markdown h3 {
+    font-weight: normal;
+    font-style: italic;
+    margin-top:0.3em;
+}
+
+#markdown p {
+    margin-top:0.7em;
+    -webkit-hypens:auto;
+    -moz-hypens:auto;
+    hyphens:auto;
+}
+
+#markdown ul {
+    list-style: square;
+    padding-left:1.2em;
+                                                                                        }
+#markdown ol {
+    padding-left:1.2em;
+}
+
+#markdown strong{
+    font-weight:bold;
+}
+
+#markdown blockquote {
+    margin-left: 1em;
+    padding-left: 1em;
+    border-left: 1px solid #ddd;
+}
+
+#markdown code {
+    font-family: "Consolas", "Menlo", "Monaco", monospace, serif;
+    font-size: .9em;
+    background: white;
+}
+
+#markdown a {
+    color: #2484c1;
+    text-decoration: none;
+}
+
+#markdown a:hover {
+    text-decoration: underline;
+}
+
+#markdown a img {
+    border:none;
+}
+
+#markdown h1 a, h1 a:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+#markdown hr {
+    color : #ddd;
+    height : 1px;
+    margin: 2em 0;
+    border-top : solid 1px #ddd;
+    border-bottom : none;
+    border-left: 0;
+    border-right: 0;
+}
