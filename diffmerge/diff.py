@@ -21,6 +21,11 @@ def diff(lastdb, newdb, time, ignore=None):
     newdb: new collection
     ignore: the neglected first level key of json in comparison, default is None, or like igore=['timetamp',]
     """
+    if isinstance(time,str):
+        time = time.split(".")[0]
+    else:
+        time = str(time).split(".")[0]
+
     gene_last_name = str(lastdb)
     gene_new_name = str(newdb)
     
