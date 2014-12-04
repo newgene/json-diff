@@ -22,4 +22,7 @@ db = conn.genetest
 
 #比较结果存储数据库
 
-db_change = db.genechange
+db_change = db.genechanges
+
+#日志库.说明：genechanges和diffjoblogs中都有key为"timestamp"的key/value
+db_logs = db.diffjoblogs

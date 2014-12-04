@@ -1,17 +1,3 @@
-exportdb数据库的输出格式。是否有二进制的格式压缩。
-测试大规模的数据
-
-
-有一对mongodb数据
- Chunlei Wu: {"pos": 10048, "chr": "1", "vartype": "del", "allele_freqs": {"C": 0.0025, "CT": 0.9975}, "ref": "CT", "genotypes": {"CT/C": [36]}, "genotype_freqs": {"CT/CT": 0.995, "CT/C": 0.005}}
-做一个界面，让用户来query
-用户输入某个参数(chr)或者参数的范围(pos)，根据搜索条件进行搜索，呈现结果，两者是and关系。
-[CST上午8时52分44秒] Chunlei Wu: fields for query:
-[CST上午8时52分48秒] Chunlei Wu: pos: integer（这是一个范围）
-[CST上午8时53分01秒] Chunlei Wu: chr: string, 1-22, MT, X
-[CST上午8时53分29秒] Chunlei Wu: vartype: string, del, dup, ins
-[CST上午8时53分39秒] Chunlei Wu: ref: string
-
 
 ##功能
 
