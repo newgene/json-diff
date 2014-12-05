@@ -34,10 +34,20 @@ def diff(lastdb, newdb, time, ignore=None):
     
     gene_last_count = len(gene_last)
     gene_new_count = len(gene_last)
-    db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count}, 
-                    "newdb":{"name":gene_new_name, "count":gene_new_count},
-                    "timestamp":time,
-                    })
+
+    #将操作信息记录日志中
+    if ignore:
+        db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count}, 
+                        "newdb":{"name":gene_new_name, "count":gene_new_count},
+                        "timestamp":time,
+                        "extra_parameters":ignore
+                        })
+    else:
+        db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count}, 
+                        "newdb":{"name":gene_new_name, "count":gene_new_count},
+                        "timestamp":time,
+                        })
+
 
     geneid = diffmethod.OptLst(gene_last, gene_new)
     
@@ -87,6 +97,7 @@ def diff(lastdb, newdb, time, ignore=None):
     else:
         replace_count = 0
     
+    #保存日志信息
     total = replace_count + remove_count + add_count
     stat = {"remove":remove_count, "add":add_count, "replace":replace_count, "total":total}
     db_logs.update({"timestamp":time},{"$set":{"stat":stat}})
