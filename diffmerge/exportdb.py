@@ -12,15 +12,27 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 
-def exportdb(dbname, collection, filename):
+def exportdb(collection, filename, condition=None):
     """
-    dbname: 数据库名称
-    collection: 所要导出的collection名称
-    filename: 导出的collection存储的文件名
-    导出之后的结果文件，存在当前目录中
+    collection: 所要导出的collection, 格式 collection=db.genechanges, db在./dboption/mongodb.py中设置
+    condition: 设置导出条件，比如导出{"timestamp":"2014-11-2 10:10:10"}，此条件必是类似格式
+               如果不赋值，意味着将整个collection导出
+    filename: 导出的collection存储的文件名（含扩展名）
+              导出之后的结果文件，存在当前目录中
     """
-
-    exportdb = "mongoexport -d " + dbname + " -c " + collection + " -o " + filename
+    collection_tostr = str(collection).split(",")
+    dbname = collection_tostr[-2].split(")")[0].split("'")[-2]
+    collection_name = collection_tostr[-1].split(")")[0].split("'")[-2]
+    
+    db.temp.remove()
+    if condition:
+        temp_doc = collection.find(condition)
+        db.temp.insert(temp_doc)
+    if db.temp.count():
+        collection_name = "temp"
+    
+    exportdb = "mongoexport -d " + dbname + " -c " + collection_name + " -o " + filename
+    print exportdb
     os.system(exportdb)
     
     filename_bef = filename.split(".")[0]
@@ -32,7 +44,7 @@ def exportdb(dbname, collection, filename):
 
 
 if __name__=="__main__":
-    dbname = 'genetest'
-    collection = 'genechange'
+    collection = db.genechanges
     filename = 'genechange.json'
-    exportdb(dbname, collection, filename)
+    #exportdb( collection, filename, {"timestamp" : "2014-12-04 21:33:44.577447"} )
+    exportdb( collection, filename )
