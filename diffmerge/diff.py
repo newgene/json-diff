@@ -33,7 +33,7 @@ def diff(lastdb, newdb, time, ignore=None):
     gene_new = [ ele["_id"] for ele in newdb.find({},{'_id':1}) ]
     
     gene_last_count = len(gene_last)
-    gene_new_count = len(gene_last)
+    gene_new_count = len(gene_new)
 
     #将操作信息记录日志中
     if ignore:
