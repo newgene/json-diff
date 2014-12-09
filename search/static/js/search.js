@@ -48,14 +48,14 @@ $(document).ready(function(){
                 }
         }
 
-        //if(data){
-        //    $.post("/query",{"content":JSON.stringify(data)},function(d){
-        //        if (d=="0") {
-        //            $(".error").css('display',"inline");
-        //            document.getElementById("error").innerHTML = "There is no data.";
-        //        }
-        //    })
-        //}
+        if(data){
+            var temp = new Object();
+            for (var i in data){
+                temp[i] = data[i];
+            }
+            search_str = "?name="+JSON.stringify(temp);
+            window.location.href="/search"+search_str;
+        }
     })
 })
 
