@@ -1,0 +1,38 @@
+<DOCTYPE html>
+<html>
+    <head>
+        <title>Query Variants</title>
+        <link rel="stylesheet" type="text/css" href="{{ static_url('css/style.css')}}">
+    </head>
+    <body>
+    <h1>Query Variants</h1>
+    <hr>
+    <br>
+    <div>
+    {% if result %}
+        <table width="960">
+        <tr>
+            <th>JSON</th> 
+        </tr>
+        {% for every_line in result %}
+            <tr>
+                <td>{{every_line}}</td>
+            </tr>
+        {% end %}
+        </table>
+    {% else %}
+        <p>There is no data</p>
+    {% end %}
+    </div>
+    <div>
+    {% if result %}
+        {% for every_line in result %}
+            <p>{{ every_line }}</p>
+        {% end %}
+    {% else %}
+        <p>There is no data</p>
+    {% end %}
+    </div>
+    </body>
+</html>
+

@@ -11,11 +11,18 @@
     <hr>
     <br>
     <div>
-    <form method="post" action="/query">
+    <form>
+    
     <p><span class='word1'>CHR:&nbsp;&nbsp;</span><input style="width:50px;" id="genechr" name="genechr" type="text">&nbsp;&nbsp;&nbsp;&nbsp;<span>dropbox，with these values: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'M', 'X']</span></p>
+    
     <p><span class='word1'>POS:&nbsp;&nbsp;</span><input style="width:100px;" id="posstart" name="posstart" type="text">&nbsp;-&nbsp;<input style="width:100px;" id="posend" name="posend" type="text"></p>
+    
     <p><span class='word1'>VARTYPE:&nbsp;&nbsp;</span><input style="width:50px;" id="vartype" name="vartype" type="text">&nbsp;&nbsp;&nbsp;&nbsp;<span>dropbox， with these values: ['del', 'ins', 'snp']</span></p>
+    
     <p><span class='word1'>REF:&nbsp;&nbsp;</span><input style="width:50px;" id="generef" name="generef" type="text"></p>
+    
+    <p><span class='word2'>Display Style:&nbsp;&nbsp;</span><input name="style" type="radio" value="table" onclick="stylefun(this.value)">TABLE&nbsp;&nbsp;<input name="style" type="radio" value="json" onclick="stylefun(this.value)">JSON</p>
+    
     <p><input class="button" id="search" name="search" type="button" style="font-weight:bold;" value="SEARCH"></p>
     <span class="error" id="error"></span></p>
     </form>

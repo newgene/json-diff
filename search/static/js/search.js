@@ -1,3 +1,6 @@
+function stylefun(style){
+    checked_style = style;
+    }
 
 $(document).ready(function(){
     $("#search").click(function(){
@@ -11,7 +14,8 @@ $(document).ready(function(){
         var number = /^([\0-9])+$/;    //only number
 
         var data = new Object();
-        
+
+        data.style = checked_style;
         if (posstart){
             check_posstart = number.test(posstart);
             if (check_posstart){data.posstart=posstart;}else{
