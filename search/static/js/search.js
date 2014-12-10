@@ -53,7 +53,7 @@ $(document).ready(function(){
             for (var i in data){
                 temp[i] = data[i];
             }
-            search_str = "?name="+JSON.stringify(temp);
+            search_str = "?con="+JSON.stringify(temp);
             window.location.href="/search"+search_str;
         }
     })

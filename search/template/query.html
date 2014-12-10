@@ -1,34 +1,46 @@
 <DOCTYPE html>
 <html>
     <head>
-        <title>Loop in template</title>
+        <title>Query Variants</title>
         <link rel="stylesheet" type="text/css" href="{{ static_url('css/style.css')}}">
     </head>
     <body>
-    <h1>Query Gene</h1>
+    <h1>Query Variants</h1>
     <hr>
     <br>
     <div>
     {% if result %}
         <table width="960">
         <tr>
-            <th>pos</th>
             <th>chr</th>
+            <th>pos</th>
             <th>vartype</th>
-            <th>allele_freqs</th>
             <th>ref</th>
             <th>genotypes</th>
             <th>genotype_freqs</th>
+            <th>allele_freqs</th>
         </tr>
         {% for every_line in result %}
             <tr>
-                <td>{{every_line['pos']}}</td>
                 <td>{{every_line['chr']}}</td>
+                <td>{{every_line['pos']}}</td>
                 <td>{{every_line['vartype']}}</td>
-                <td>{{every_line['allele_freqs']}}</td>
                 <td>{{every_line['ref']}}</td>
-                <td>{{every_line['genotypes']}}</td>
-                <td>{{every_line['genotype_freqs']}}</td>
+                <td><!--{{every_line['genotypes']}}-->
+                    {% for k in every_line['genotypes'] %}
+                        <p>{{k}}:&nbsp;&nbsp;{{len(every_line['genotypes'][k])}}</p>
+                    {% end %}
+                </td>
+                <td><!--{{every_line['genotype_freqs']}}-->
+                    {% for m in every_line['genotype_freqs'] %}
+                        <p>{{m}}:&nbsp;&nbsp;{{every_line['genotype_freqs'][m]}}</p>
+                    {% end %}
+                </td>
+                <td><!--{{every_line['allele_freqs']}}-->
+                    {% for n in every_line['allele_freqs'] %}
+                        <p>{{n}}:&nbsp;&nbsp;{{every_line['allele_freqs'][n]}}</p>
+                    {% end %}
+                </td>
             </tr>
         {% end %}
         </table>
