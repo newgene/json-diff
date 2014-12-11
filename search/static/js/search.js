@@ -6,8 +6,8 @@ $(document).ready(function(){
     $("#search").click(function(){
         var posstart = document.getElementById("posstart").value;
         var posend = document.getElementById("posend").value;
-        var chr = document.getElementById("genechr").value;
-        var vartype = document.getElementById("vartype").value;
+        var chr = $("#genechr").val();
+        var vartype = $("#vartype").val();
         var ref = document.getElementById("generef").value;
 
         var let_num = /^([A-Za-z0-9])+$/;    //letter and number
@@ -30,14 +30,14 @@ $(document).ready(function(){
                 document.getElementById("error").innerHTML="POS should be inter";
                 }
         }
-        if (chr){
+        if (chr != '0'){
             check_chr = let_num.test(chr);
             if (check_chr){data.chr=chr;}else{
                 $(".error").css('display','inline');
                 document.getElementById("error").innerHTML="CHR should be letter or inter";
                 }
         }
-        if (vartype){
+        if (vartype != '0'){
             check_vartype = let_num.test(vartype);
             if (check_vartype){data.vartype=vartype;}else{
                 $(".error").css('display','inline');
