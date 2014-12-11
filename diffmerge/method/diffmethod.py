@@ -96,7 +96,11 @@ class DiffJson():
                 changes_value.append(result)
         return changes_value
 
-
+def collection_name(db_collection):
+    collection_tostr = str(db_collection).split(",")
+    dbname = collection_tostr[-2].split(")")[0].split("'")[-2]
+    collection_name = collection_tostr[-1].split(")")[0].split("'")[-2]
+    return {"dbname":dbname, "collection":collection_name}
 
 
 

@@ -3,6 +3,8 @@
 
 from dboption.mongodb import *
 
+from method import diffmethod
+
 import datetime
 import os
 import os.path
@@ -20,9 +22,9 @@ def exportdb(collection, filename, condition=None):
     filename: 导出的collection存储的文件名（含扩展名）
               导出之后的结果文件，存在当前目录中
     """
-    collection_tostr = str(collection).split(",")
-    dbname = collection_tostr[-2].split(")")[0].split("'")[-2]
-    collection_name = collection_tostr[-1].split(")")[0].split("'")[-2]
+    db_collection = diffmethod.collection_name(collection)
+    dbname = db_collection["dbname"]
+    collection_name = db_collection["collection"]
     
     db.temp.remove()
     if condition:

@@ -26,8 +26,6 @@ def diff(lastdb, newdb, time, ignore=None):
     else:
         time = str(time).split(".")[0]
 
-    gene_last_name = str(lastdb)
-    gene_new_name = str(newdb)
     
     gene_last = [ ele["_id"] for ele in lastdb.find({},{'_id':1}) ]
     gene_new = [ ele["_id"] for ele in newdb.find({},{'_id':1}) ]
@@ -36,6 +34,10 @@ def diff(lastdb, newdb, time, ignore=None):
     gene_new_count = len(gene_new)
 
     #将操作信息记录日志中
+    oldname = diffmethod.collection_name(lastdb)
+    newname = diffmethod.collection_name(newdb)
+    gene_last_name = oldname["collection"]
+    gene_new_name = newname["collection"]
     if ignore:
         db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count}, 
                         "newdb":{"name":gene_new_name, "count":gene_new_count},
