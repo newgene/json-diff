@@ -1,6 +1,3 @@
-function stylefun(style){
-    checked_style = style;
-    }
 
 $(document).ready(function(){
     $("#search").click(function(){
@@ -15,7 +12,6 @@ $(document).ready(function(){
 
         var data = new Object();
 
-        data.style = checked_style;
         if (posstart){
             check_posstart = number.test(posstart);
             if (check_posstart){data.posstart=posstart;}else{
@@ -52,14 +48,12 @@ $(document).ready(function(){
                 }
         }
 
-        if(data){
-            var temp = new Object();
-            for (var i in data){
-                temp[i] = data[i];
+        $.post( "/query", {"data":JSON.stringify(data)}, function( e ) {
+            if (e){
+                search_str = "?q="+JSON.stringify(data)+"&j="+e;
+                window.location.href="/search"+search_str;
             }
-            search_str = "?con="+JSON.stringify(temp);
-            window.location.href="/search"+search_str;
-        }
+        });
     })
 })
 

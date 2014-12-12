@@ -16,7 +16,9 @@ class IndexHandler(tornado.web.RequestHandler):
 
 class SearchHandler(tornado.web.RequestHandler):
     def get(self):
-        search_con = self.get_arguments("con")[0]
+        search_con = self.get_arguments("q")[0]
+        file_name = self.get_argument("j")
+        
         content = tornado.escape.json_decode(search_con)
 
         query_con = {}
@@ -35,23 +37,15 @@ class SearchHandler(tornado.web.RequestHandler):
             pass
 
         for k,v in content.items():
-            if k=="vartype":
-                v = v.lower()
-            if k=="ref":
-                v = v.upper()
-            if k!="style":
-                query_con[k] = v
+            query_con[k] = v
 
         
         if query_con:
             que = db.find(query_con)
+            json_file = u"/static/jsonfile/"+file_name+u".json"
+            print json_file
             if que.count():
-                if content["style"]=="table":
-                    self.render("query.html", result=que)
-                elif content["style"]=="json":
-                    self.render("search.html", result=que)
-                else:
-                    self.render("query.html", result=False)
+                self.render("query.html", result=que, json=json_file)
             else:
                 self.render("query.html", result=False)
         else:

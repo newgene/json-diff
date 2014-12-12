@@ -19,3 +19,5 @@ db = conn.genetest.tordb
 #lastdb = db.genedoc_mygene_20141019_efqag2hg
 #newdb = db.genedoc_mygene_20141026_g6svo5ct
 
+#下面的路径是存储json文件的目录路径
+json_dir = "/home/qw/Documents/gene/search/static/jsonfile/"

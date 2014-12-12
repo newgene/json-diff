@@ -2,13 +2,24 @@
 <html>
     <head>
         <title>Query Variants</title>
-        <link rel="stylesheet" type="text/css" href="{{ static_url('css/style.css')}}">
+        <link title="将较长的行自动换行" href="resource://gre-resources/plaintext.css" type="text/css" rel="alternate stylesheet">
+        <!--link rel="stylesheet" type="text/css" href="{{ static_url('css/style.css')}}"-->
     </head>
     <body>
     <h1>Query Variants</h1>
     <hr>
     <br>
     <div>
+    {% if result %}
+        {% for every_line in result %}
+            <pre>{{every_line}}</pre>
+        {% end %}
+    {% else %}
+        <pre>There is no data</pre>
+    {% end %}
+    </div>
+
+    <!--div>
     {% if result %}
         <table width="960">
         <tr>
@@ -24,15 +35,7 @@
         <p>There is no data</p>
     {% end %}
     </div>
-    <div>
-    {% if result %}
-        {% for every_line in result %}
-            <p>{{ every_line }}</p>
-        {% end %}
-    {% else %}
-        <p>There is no data</p>
-    {% end %}
-    </div>
+    <div-->
     </body>
 </html>
 
