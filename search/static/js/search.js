@@ -1,4 +1,3 @@
-
 $(document).ready(function(){
     $("#search").click(function(){
         var posstart = document.getElementById("posstart").value;
@@ -50,7 +49,8 @@ $(document).ready(function(){
 
         $.post( "/query", {"data":JSON.stringify(data)}, function( e ) {
             if (e!="0"){
-                search_str = "?q="+JSON.stringify(data)+"&j="+e;
+                page = 1
+                search_str = "?q="+JSON.stringify(data)+"&j="+e+"&p="+page;
                 window.location.href="/search"+search_str;
             }else{
             $(".error").css("display","inline");
@@ -58,6 +58,25 @@ $(document).ready(function(){
             }
         });
     })
+
 })
 
+function nextPage(){
+    url_search = window.location.search;
+    search_lst = url_search.split("&");
+    current_page = search_lst[2].split('=')[1];
+    var page = new Number(current_page); 
+    next_page = page + 1;
+    search_str = search_lst[0]+"&"+search_lst[1]+"&p="+next_page;
+    window.location.href="/search"+search_str;
+}
+function prePage(){
+    url_search = window.location.search;
+    search_lst = url_search.split("&");
+    current_page = search_lst[2].split('=')[1];
+    var page = new Number(current_page); 
+    pre_page = page - 1;
+    search_str = search_lst[0]+"&"+search_lst[1]+"&p="+pre_page;
+    window.location.href="/search"+search_str;
+}
 
