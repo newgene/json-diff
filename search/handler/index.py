@@ -37,6 +37,8 @@ class SearchHandler(tornado.web.RequestHandler):
             pass
 
         for k,v in content.items():
+            if k=="ref":
+                v = v.upper()
             query_con[k] = v
 
         

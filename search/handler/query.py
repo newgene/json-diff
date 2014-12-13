@@ -7,6 +7,7 @@ from db.db import *
 
 import json
 import datetime
+import os
 
 import sys
 reload(sys)
@@ -34,6 +35,8 @@ class QueryGene(tornado.web.RequestHandler):
             pass
 
         for k,v in content.items():
+            if k=="ref":
+                v = v.upper()
             query_con[str(k)] = str(v)
 
         if query_con:
@@ -44,13 +47,14 @@ class QueryGene(tornado.web.RequestHandler):
                 file_name = str(datetime.datetime.now())
                 file_name = "-".join(file_name.split(' '))
                 json_file = json_dir + file_name + ".json"
-                print json_file           
+                
+                os.system("rm -f "+json_dir+"*.json")
                 with open(json_file, "w") as fj:
                     fj.write(data_json)
                 self.write(file_name)
             
             else:
-                self.render("query.html", result=False)
+                self.write("0")
         else:
-            self.render("query.html", result=False)
+            self.write("0")
 

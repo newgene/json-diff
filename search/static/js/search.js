@@ -49,9 +49,12 @@ $(document).ready(function(){
         }
 
         $.post( "/query", {"data":JSON.stringify(data)}, function( e ) {
-            if (e){
+            if (e!="0"){
                 search_str = "?q="+JSON.stringify(data)+"&j="+e;
                 window.location.href="/search"+search_str;
+            }else{
+            $(".error").css("display","inline");
+            document.getElementById("error").innerHTML="There is no data, please change condition."
             }
         });
     })
