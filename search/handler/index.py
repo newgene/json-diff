@@ -54,3 +54,47 @@ class SearchHandler(tornado.web.RequestHandler):
         else:
             self.render("query.html", result=False)
 
+    def post(self):
+        content = self.get_argument("data")
+        content = tornado.escape.json_decode(content)
+        
+        query_con = {}
+
+        if "posstart" in content and "posend" in content:
+            pos_con = {"$gte":int(content['posstart']), "$lte":int(content['posend'])}
+            query_con["pos"] = pos_con
+            del content["posstart"]
+            del content["posend"]
+        elif "posstart" in content:
+            query_con['pos'] = int(content['posstart'])
+            del content["posstart"]
+        elif "posend" in content:
+            query_con['pos'] = int(content['posend'])
+            del content["posend"]
+        else:
+            pass
+
+        for k,v in content.items():
+            if k=="ref":
+                v = v.upper()
+            query_con[str(k)] = str(v)
+
+        if query_con:
+            que = db.find(query_con,{"_id":0})
+            count = que.count
+            if count:
+                #lst = [ tornado.escape.json_encode(every) for every in que]
+                #data_json = json.dumps(lst, sort_keys=True, indent=2)
+                #file_name = str(datetime.datetime.now())
+                #file_name = "-".join(file_name.split(' '))
+                #json_file = json_dir + file_name + ".json"
+                
+                #os.system("rm -f "+json_dir+"*.json")
+                #with open(json_file, "w") as fj:
+                #    fj.write(data_json)
+                self.write("1")
+            
+            else:
+                self.write("0")
+        else:
+            self.write("0")
