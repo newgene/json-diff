@@ -11,7 +11,7 @@
     <hr>
     <br>
     <div>
-    <p><input type="button" value="Click to get JSON" id="getjson"></p>
+    <p><input type="button" value="Click to get JSON of this pange" id="getjson"></p>
     <table width="960" border="0" cellspacing="0" cellpadding="0" style="background:white;">
         <tr>
         <td border="0" style="background:white;">
@@ -25,8 +25,9 @@
             </select>
         </td>
         <td border="0" style="background:white;text-align:right;">
+        Total Lines:{{total}};&nbsp;&nbsp;&nbsp;Total Pages:{{pages}}&nbsp;&nbsp;&nbsp;
         {%if currentpage > 1 %}
-        <input type="button" value="PrePage" onclick="prePage()">
+        <input type="button" value="PrePage" onclick="prePage()">&nbsp;&nbsp;&nbsp;
         {% end %}
         {% if pages>1 and currentpage<pages %}
         <input type="button" value="NextPage" onclick="nextPage()">

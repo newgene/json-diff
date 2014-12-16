@@ -7,11 +7,8 @@ sys.setdefaultencoding('utf-8')
 
 from handler.index import IndexHandler
 from handler.index import SearchHandler
-from handler.query import QueryGene
 
 url=[
     (r'/', IndexHandler),
-    (r'/query', QueryGene),
     (r'/search', SearchHandler),
-
     ]
