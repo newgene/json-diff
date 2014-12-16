@@ -17,7 +17,7 @@ class IndexHandler(tornado.web.RequestHandler):
 class SearchHandler(tornado.web.RequestHandler):
     def get(self):
         search_con = self.get_arguments("q")[0]
-        file_name = self.get_argument("j")
+        page_size = int(self.get_argument("ps"))
         current_page = int(self.get_argument("p"))
         
         content = tornado.escape.json_decode(search_con)
@@ -44,13 +44,12 @@ class SearchHandler(tornado.web.RequestHandler):
 
         
         if query_con:
-            page_size = 10
             begin_index = (current_page - 1) * page_size
             que = db.find(query_con).skip(begin_index).limit(page_size)
             counts = que.count()
             pages = counts / page_size if counts % page_size == 0 else counts / page_size + 1
-            json_file = u"/static/jsonfile/"+file_name+u".json"
-            self.render("query.html", result=que, json=json_file, currentpage=current_page, pages=int(pages))
+            #json_file = u"/static/jsonfile/"+file_name+u".json"
+            self.render("query.html", result=que, currentpage=current_page, pages=int(pages))
         else:
             self.render("query.html", result=False)
 

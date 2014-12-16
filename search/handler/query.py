@@ -6,7 +6,6 @@ import tornado.web
 from db.db import *
 
 import json
-import requests
 import datetime
 import os
 
@@ -45,17 +44,9 @@ class QueryGene(tornado.web.RequestHandler):
         if query_con:
             que = db.find(query_con,{"_id":0})
             if que.count():
-                lst = [ tornado.escape.json_encode(every) for every in que]
-                data_json = json.dumps(lst, sort_keys=True, indent=2)
-                #file_name = str(datetime.datetime.now())
-                #file_name = "-".join(file_name.split(' '))
-                #json_file = json_dir + file_name + ".json"
-                
-                #os.system("rm -f "+json_dir+"*.json")
-                #with open(json_file, "w") as fj:
-                #    fj.write(data_json)
-                self.write(data_json)
-            
+                lst = [ every for every in que]
+                data_json = json.dumps(lst, indent=2)
+                self.write("<pre>"+data_json+"</pre>")
             else:
                 self.write("0")
         else:

@@ -49,8 +49,9 @@ $(document).ready(function(){
 
         $.post( "/search", {"data":JSON.stringify(data)}, function( e ) {
             if (e!="0"){
-                page = 1
-                search_str = "?q="+JSON.stringify(data)+"&j="+e+"&p="+page;
+                page = 1;
+                pagesize = 10;
+                search_str = "?q="+JSON.stringify(data)+"&ps="+pagesize+"&p="+page;
                 window.location.href="/search"+search_str;
             }else{
             $(".error").css("display","inline");
@@ -79,6 +80,20 @@ function prePage(){
     search_str = search_lst[0]+"&"+search_lst[1]+"&p="+pre_page;
     window.location.href="/search"+search_str;
 }
+
+function changePageSize(pagesize){
+    url_search = window.location.search;
+    search_lst = url_search.split("&");
+    search_str = search_lst[0]+"&ps="+pagesize+"&"+search_lst[2];
+    window.location.href="/search"+search_str;
+    }
+
+$(document).ready(function(){
+    $('#pagesize').change(function(){
+        var pagesize = $(this).children('option:selected').val();
+        changePageSize(pagesize);
+        });
+})
 
 $(document).ready(function(){
     $("#getjson").click(function(){
