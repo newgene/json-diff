@@ -22,8 +22,12 @@ def merge(lastdb, diffdb):
     lastdb: the old gene database
     diffdb: the database that is the update/newly add/remove parts new gene database relativality old database
     """
-    merge = diffdb.find()
-    for gene in merge:
+    #merge = diffdb.find()
+    merge_id = [ ele["_id"] for ele in diffdb.find({},{'_id':1}) ]
+    it_id = iter(merge_id)
+    for i in range(len(merge_id)):
+        one_id = it_id.next()
+        gene = diffdb.find({"_id":one_id})
         if gene["stat"] == "add":
             lastdb.insert(gene["value"])
         elif gene["stat"] == "remove":
