@@ -27,7 +27,7 @@ def merge(lastdb, diffdb):
     it_id = iter(merge_id)
     for i in range(len(merge_id)):
         one_id = it_id.next()
-        gene = diffdb.find({"_id":one_id})
+        gene = diffdb.find_one({"_id":one_id})
         if gene["stat"] == "add":
             lastdb.insert(gene["value"])
         elif gene["stat"] == "remove":
@@ -44,7 +44,7 @@ def main():
     print "I am merge the new genes to old gene database."
     
     lastdb = db.genedoc_mygene_20141019_efqag2hg
-    diffdb = db.genechange      #genechange是存储变更的数据的collection
+    diffdb = db.genechanges      #genechange是存储变更的数据的collection
 
     merge(lastdb, diffdb)
     
