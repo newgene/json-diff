@@ -27,15 +27,18 @@ class SearchHandler(tornado.web.RequestHandler):
         
         if query_con:
             begin_index = (current_page - 1) * page_size
-            que = db.find(query_con,{"_id":0}).skip(begin_index).limit(page_size)
+            que = db.find(query_con,{"_id":0}).sort([('chr', 1), ('pos', 1)]).skip(begin_index).limit(page_size)
             if style=="t":
                 counts = que.count()
                 pages = counts / page_size if counts % page_size == 0 else counts / page_size + 1
                 self.render("query.html", result=que, currentpage=current_page, pages=int(pages), total=int(counts))
             elif style=="j":
-                lst = [ every for every in que]
-                data_json = json.dumps(lst, indent=2)
-                self.write("<pre>"+data_json+"</pre>")
+                #lst = [ every for every in que]
+                #data_json = json.dumps(lst, indent=2)
+                #self.write("<pre>"+data_json+"</pre>")
+                data_json = json.dumps(list(que), indent=2)
+                self.set_header("Content-Type", "application/json; charset=UTF-8")
+                self.write(data_json)
             else:
                 pass
         else:
