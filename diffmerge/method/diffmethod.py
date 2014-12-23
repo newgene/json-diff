@@ -4,6 +4,7 @@
 import datetime
 import json
 import json_tools
+import jsonpatch
 
 from itertools import izip
 
@@ -37,8 +38,13 @@ class DiffJson():
         self.new = new_dict
     
     def diffDict(self):         #compare two dictionaries and return to the result in the form of a list
-        diff = json_tools.diff(self.old, self.new)
-        return diff
+        #diff = json_tools.diff(self.old, self.new)
+        diff = jsonpatch.make_patch(self.old, self.new)
+        diff = list(diff)
+        if diff:
+            return diff
+        else:
+            return False
 
     '''
     #for example:

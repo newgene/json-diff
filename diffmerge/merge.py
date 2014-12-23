@@ -7,6 +7,7 @@ from dboption.mongodb import *
 
 import time
 import json_tools
+import jsonpatch
 
 import sys
 reload(sys)
@@ -24,17 +25,21 @@ def merge(lastdb, diffdb):
     """
     #merge = diffdb.find()
     merge_id = [ ele["_id"] for ele in diffdb.find({},{'_id':1}) ]
-    it_id = iter(merge_id)
-    for i in range(len(merge_id)):
-        one_id = it_id.next()
-        gene = diffdb.find_one({"_id":one_id})
+    #it_id = iter(merge_id)
+    #for i in range(len(merge_id)):
+    for i in merge_id:
+        #one_id = it_id.next()
+        gene = diffdb.find_one({"_id":i})
         if gene["stat"] == "add":
             lastdb.insert(gene["value"])
         elif gene["stat"] == "remove":
             lastdb.remove({"_id":gene["gene_id"]})
         elif gene["stat"] == "replace":
             last_gene = lastdb.find_one({"_id":gene["gene_id"]})
-            new_gene = json_tools.patch(last_gene, gene["value"])
+            patch_lst = gene["value"]
+            #new_gene = json_tools.patch(last_gene, gene["value"])
+            patch = jsonpatch.JsonPatch(patch_lst)
+            new_gene = patch.apply(last_gene)
             lastdb.update({"_id":gene["gene_id"]}, new_gene)
         else:
             print "There is not new gene."

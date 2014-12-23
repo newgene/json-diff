@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python 
 #coding:utf-8
 
 from method import diffmethod
@@ -94,8 +94,9 @@ def diff(lastdb, newdb, time, ignore=None):
             if cmp(last_content, new_content) !=0:
                 diff = diffmethod.DiffJson(last_content, new_content)
                 diff_lst = diff.diffDict()
-                db_change.insert( {"gene_id":i, "stat":"replace", "value":diff_lst, "timestamp":time} )
-                replace_count +=1
+                if diff_lst:
+                    db_change.insert( {"gene_id":i, "stat":"replace", "value":diff_lst, "timestamp":time} )
+                    replace_count +=1
     else:
         replace_count = 0
     
