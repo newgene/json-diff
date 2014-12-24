@@ -37,10 +37,12 @@ def merge(lastdb, diffdb):
         elif gene["stat"] == "replace":
             last_gene = lastdb.find_one({"_id":gene["gene_id"]})
             patch_lst = gene["value"]
+            if patch_lst:
             #new_gene = json_tools.patch(last_gene, gene["value"])
-            patch = jsonpatch.JsonPatch(patch_lst)
-            new_gene = patch.apply(last_gene)
-            lastdb.update({"_id":gene["gene_id"]}, new_gene)
+                patch = jsonpatch.JsonPatch(patch_lst)
+                new_gene = patch.apply(last_gene)
+                #new_gene = jsonpatch.apply_patch(last_gene, patch_lst, in_place=True)
+                lastdb.update({"_id":gene["gene_id"]}, new_gene)
         else:
             print "There is not new gene."
 

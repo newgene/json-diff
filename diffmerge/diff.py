@@ -7,6 +7,7 @@ from dboption.mongodb import *
 
 import time
 import datetime
+import jsonpatch
 
 import sys
 reload(sys)
@@ -90,13 +91,15 @@ def diff(lastdb, newdb, time, ignore=None):
             else:
                 last_content = lastdb.find_one( {"_id":i} )
                 new_content = newdb.find_one( {"_id":i} )
-
-            if cmp(last_content, new_content) !=0:
-                diff = diffmethod.DiffJson(last_content, new_content)
-                diff_lst = diff.diffDict()
-                if diff_lst:
-                    db_change.insert( {"gene_id":i, "stat":"replace", "value":diff_lst, "timestamp":time} )
-                    replace_count +=1
+            
+            patch = jsonpatch.JsonPatch.from_diff(last_content, new_content)
+            diff_lst = list(patch)
+            #if cmp(last_content, new_content) !=0:
+                #diff = diffmethod.DiffJson(last_content, new_content)
+                #diff_lst = diff.diffDict()
+            if diff_lst:
+                db_change.insert( {"gene_id":i, "stat":"replace", "value":diff_lst, "timestamp":time} )
+                replace_count +=1
     else:
         replace_count = 0
     
