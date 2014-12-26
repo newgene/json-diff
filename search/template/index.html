@@ -2,66 +2,115 @@
 <html>
 <head>
     <title>Wellderly Query</title>
-    <link rel="stylesheet" type="text/css" href="{{static_url("css/style.css")}}"/>
-    <script src="{{static_url("js/jquery-1.10.2.js")}}"></script>
-    <script src="{{static_url("js/jquery-ui-1.10.4.custom.min.js")}}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+    <!--<![endif]-->
+    
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="{{static_url("css/blog-old-ie.css")}}">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="{{static_url("css/blog.css")}}">
+    <!--<![endif]-->
+
+    <!--link rel="stylesheet" type="text/css" href="{{static_url("css/style.css")}}"/-->
+    
+    <script type="text/javascript" src="{{static_url("js/jquery.min.js")}}"></script>
+    
 </head>
+
 <body>
-    <h1><a href="/">Wellderly Query</a></h1>
-    <hr>
-    <br>
-    <div>
-    <form>
-    
-    <p><span class='word1'>CHR:&nbsp;&nbsp;</span>
-        <select name="genechr" id="genechr">
-            <option value="0">choose</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="M">M</option>
-            <option value="X">X</option>
-        </select>
-        <span> &nbsp;&nbsp;* required</span>
-    </p>
-    
-    <p><span class='word1'>POS:&nbsp;&nbsp;</span><input style="width:100px;" id="posstart" name="posstart" type="text">&nbsp;-&nbsp;<input style="width:100px;" id="posend" name="posend" type="text"></p>
-    
-    <p><span class='word1'>VARTYPE:&nbsp;&nbsp;</span>
-        <select id="vartype" name="vartype">
-            <option value="0">ALL</option>
-            <option value="del">del</option>
-            <option value="ins">ins</option>
-            <option value="snp">snp</option>
-        </select>
-    </p>
-    
-    <p><span class='word1'>REF:&nbsp;&nbsp;</span><input style="width:50px;" id="generef" name="generef" type="text"></p>
-    
-    <p><input class="button" id="search" name="search" type="button" style="font-weight:bold;" value="SEARCH"></p>
-    <span class="error" id="error"></span></p>
-    </form>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+        <div class="header">
+        <h1 class="brand-title">Wellderly Query</h1>
+        </div>
+        <div>
+        <form class="pure-form pure-form-aligned">
+        <fieldset>
+        <legend style="color:white">Query Condition</legend>
+        <div class="pure-control-group">
+        <label for="CHR">(required*) CHR</label>
+            <select name="genechr" id="genechr" style="width:6em">
+                <option value="1" selected="selected">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="M">M</option>
+                <option value="X">X</option>
+            </select>
+        </div>
+        <div class="pure-control-group">
+        <label for="POSfrom">POS from</label>
+        <input id="posstart" name="posstart" type="text" style="width:6em">
+        </div>
+        <div class="pure-control-group">
+        <label for="POSto">POS to</label>
+        <input id="posend" name="posend" type="text" style="width:6em">
+        </div>
+        <div class="pure-control-group">
+        <label for="VARTYPE">VARTYPE</label>
+            <select id="vartype" name="vartype" style="width:6em">
+                <option value="0" selected="selected">ALL</option>
+                <option value="del">del</option>
+                <option value="ins">ins</option>
+                <option value="snp">snp</option>
+            </select>
+        </div>
+        <div class="pure-control-group">
+        <input type="button" class="pure-button pure-button-active" style="margin-left:8em;width:10em" id="search" name="search" value="I'm Feeling Lucky">
+        </div>
+        <legend style="color:white">More Options</legend>
+        <div class="pure-control-group">
+        <label for="PageSize">Page Size</label>
+            <select id="items_per_page" style="width:6em">
+                <option value="10" selected="selected">10</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="500">500</option>
+                <option value="1000">1000</option>
+            </select>
+        </div>
+        </fieldset>
+        </form>
+        <div class="pure-control-group" id="tableandjson">
+        </div>
+        </div>
     </div>
-<script src="{{static_url("js/search.js")}}"></script>
+
+    <!--search result-->
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div id="Searchresult" class="post">
+            <dt>这里可以放一些说明性的文字，比如介绍本网站的基本功能和网站所有者信息等。<br>
+            并告诉用户结果会呈现在这里,或者其它注意信息.</dt>
+        </div>
+    </div>
+</div>
+    <script type="text/javascript" src="{{static_url("js/search.js")}}"></script>
 </body>
 </html>
 
