@@ -37,23 +37,19 @@ class IndexHandler(tornado.web.RequestHandler):
             begin_index = (int(current_page) - 1) * int(page_size)
             que = db.find(query_con,{"_id":0}).sort([sort_con]).skip(begin_index).limit(int(page_size))
             return_data['value'] = list(que)
-            if display_format =="table":
-                counts = que.count()
-                pages = int(counts) / int(page_size) if int(counts) % int(page_size) == 0 else int(counts) / int(page_size) + 1
-                return_data['counts'] = int(counts)
-                return_data['pages'] = int(pages)
-                return_data['currentpage'] = int(current_page)
+            counts = que.count()
+            pages = int(counts) / int(page_size) if int(counts) % int(page_size) == 0 else int(counts) / int(page_size) + 1
+            return_data['counts'] = int(counts)
+            return_data['pages'] = int(pages)
+            return_data['currentpage'] = int(current_page)
+            return_data['format'] = display_format
+            if display_format == "table":
                 data_json = json.dumps(return_data)
                 self.write(data_json)
             elif display_format == "json":
-                #lst = [ every for every in que]
-                #print lst
                 data_json = json.dumps(return_data['value'], indent=2)
+                self.set_header("Content-Type", "application/json; charset=UTF-8")
                 self.write(data_json)
-                #data_json = json.dumps(list(que), indent=2)
-                #print data_json
-                #self.set_header("Content-Type", "application/json; charset=UTF-8")
-                #self.write(data_json)
             else:
                 self.write("0")
         else:
