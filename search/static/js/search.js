@@ -1,6 +1,8 @@
 var data = new Object();        //post to tornado
-var result = new Object();      
-var nowpage = 1;
+//var result = new Object();      
+var nowpage = 1;                //current page
+
+//click query button to search and display the result in webpage
 
 $(document).ready(function(){
     $("#search").click(function(){
@@ -11,7 +13,7 @@ $(document).ready(function(){
         var pagesize = $("#items_per_page").val();
 
         var let_num = /^([A-Za-z0-9])+$/;    //letter and number
-        var number = /^([\0-9])+$/;    //only number
+        var number = /^([\0-9])+$/;          //only number
 
         if (posstart){
             check_posstart = number.test(posstart);
@@ -65,7 +67,7 @@ $(document).ready(function(){
 //query nothing, then do this
 
 function no_values(){
-    $('#Searchresult').html("<div><h2 class='post-title'>There is no data, change the conditions please.</h2></div>");    
+    $('#Searchresult').html("<div><h2 class='post-title'>Opps, the data you want was not found.</h2></div>");    
     $('#tableandjson').html(" ");
 }
 
@@ -76,7 +78,7 @@ function table_result(data,pagesize){
     var total_pages = data['pages'];
     var results = data['value'];
     var current_page = data['currentpage'];
-    var new_table = "<div class='post-description'><table style='width:100%;table-layout:fixed;' class='pure-table'><thead><tr><th style='width:4em;'>chr</th><th style='width:7em'>pos</th><th style='width:6em'>vartype</th><th>ref</th><th>genotypes</th><th>genotype_freqs</th><th>allele_freqs</th></tr></thead><tbody>";
+    var new_table = "<div class='post-description'><table style='width:100%;table-layout:fixed;' class='pure-table'><thead><tr><th style='width:4em;'>chr</th><th style='width:7em; cursor:pointer' onclick='javascript:sortCol(1)'>pos</th><th style='width:6em; cursor:pointer' onclick='javascript:sortCol(2)'>vartype</th><th style='cursor:pointer' onclick='javascript:sortCol(3)'>ref</th><th style='cursor:pointer' onclick='javascript:sortCol(4)'>genotypes</th><th style='cursor:pointer' onclick='javascript:sortCol(5)'>genotype_freqs</th><th style='cursor:pointer' onclick='javascript:sortCol(6)'>allele_freqs</th></tr></thead><tbody>";
     
     if (Number(total_pages)==1){
         title_html = "<div><div class='content-subhead'><span class='post-meta'>TOTAL LINES:"+total_lines+"&nbsp;&nbsp;TOTAL PAGES:"+total_pages+"</span></div>"
@@ -108,6 +110,8 @@ function table_result(data,pagesize){
     $('#Searchresult').html(title_html+new_table);
 }
 
+//the values of genotypes filed: key:len(values)
+
 function genotypes(data_object){
     var geno_result = "";
     for(var key in data_object){
@@ -116,6 +120,8 @@ function genotypes(data_object){
     return geno_result;
     }
 
+//the values of genotype_freqs and allele_freqs, and the decimal is less 4, and the letter of one line less 10
+
 function freqs(data_object){
     var freqs_result = "";
     for (var key in data_object){
@@ -123,6 +129,8 @@ function freqs(data_object){
         }
     return freqs_result;
     }
+
+//in one page, the range of lines
 
 function rangePage(current_page,total_lines,total_pages,page_size){
     if (Number(current_page)<Number(total_pages)){
@@ -133,6 +141,8 @@ function rangePage(current_page,total_lines,total_pages,page_size){
         return range_line;
         }
 }
+
+//if the letter is more than 10, then break and turn to next line
 
 function wordBreak(word_string){
     var breaked = '';
@@ -151,6 +161,8 @@ function wordBreak(word_string){
     }
 }
 
+//The argument('num_string') is a decimal or not, if is, then return it and less 'n' of its decimal
+
 function changeDecimal(num_string,n){  //n is the length of decimal, 3.14=>n=2
     if (String(num_string).indexOf(".")>-1){
         var decimal_string = String(num_string).split(".")[1];
@@ -164,6 +176,8 @@ function changeDecimal(num_string,n){  //n is the length of decimal, 3.14=>n=2
         return num_string;
     }
 }
+
+//next page
 
 function nextPage(){
     var pagesize = data['pagesize'];
@@ -190,6 +204,8 @@ function nextPage(){
     //}
 }
 
+//prev page
+
 function prevPage(){
     nowpage -= 1;
     var pagesize = data['pagesize']
@@ -208,6 +224,8 @@ function prevPage(){
     //table_result(back_data,Number(data['pagesize']));
 }
 
+//change the iterms per page, then return the call in webpage
+
 $(document).ready(function(){
     $("#items_per_page").change(function(){
         if (not_empty(data) && data['format']=="table"){
@@ -217,9 +235,9 @@ $(document).ready(function(){
             $.post("/", {"data":JSON.stringify(data)}, function(e){
                 if (e!="0"){
                     var back_data = eval('(' + e + ')');
-                    var cur_page = back_data['currentpage'];
-                    result = {};
-                    result[Number(cur_page)] = back_data;
+                    //var cur_page = back_data['currentpage'];
+                    //result = {};
+                    //result[Number(cur_page)] = back_data;
                     if (back_data['counts']==" "){
                         no_values();
                     }else{
@@ -234,7 +252,7 @@ $(document).ready(function(){
         });
     });
 
-
+//judge an object is empty or not
 
 function not_empty(obj){
     for (var name in obj){
@@ -243,6 +261,7 @@ function not_empty(obj){
     return false;
     };
 
+//return the Json of result
 
 function getJson(){
     data['format'] = 'json';
@@ -253,12 +272,33 @@ function getJson(){
         else{
             no_values();
         }
-});
+    });
 }
+
+
 
 function backTable(){
         var back_data = result[nowpage];
         var pagesize = back_data['pagesize'];
         table_result(back_data,Number(pagesize));
         $('#tableandjson').html("<input id='getjson' style='margin-left:2em;width:16em' class='pure-button pure-button-primary' onclick='getJson()' value='Click here to get Json' type='button'>");
+}
+
+function sortCol(n){
+    var title = document.getElementsByTagName('th')[n].innerHTML ;
+    data['bysort'] = title;
+    data['nowpage'] = '1';
+    $.post("/", {"data":JSON.stringify(data)}, function(e){
+        if (e!="0"){
+            var back_data = eval('(' + e + ')');
+            if (back_data['counts']==" "){
+                no_values();
+            }else{
+                var pagesize = data['pagesize'];
+                table_result(back_data,Number(pagesize));
+            }
+        }else{
+            no_values();
+        }
+    });
 }
