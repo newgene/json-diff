@@ -1,5 +1,4 @@
 var data = new Object();        //post to tornado
-//var result = new Object();      
 var nowpage = 1;                //current page
 
 //click query button to search and display the result in webpage
@@ -42,6 +41,7 @@ $(document).ready(function(){
         data['chr'] = chr;
         data['pagesize'] = pagesize;
         data['nowpage'] = '1';
+        nowpage = 1;
         data['format'] = 'table';
         data['bysort'] = 'pos';
     
@@ -49,8 +49,6 @@ $(document).ready(function(){
             if (e!="0"){
                 var back_data = eval('(' + e + ')');
                 var cur_page = back_data['currentpage'];
-                //result = {};
-                //result[Number(cur_page)] = back_data;
                 if (back_data['counts']==" "){
                     no_values();
                 }else{
@@ -182,15 +180,10 @@ function changeDecimal(num_string,n){  //n is the length of decimal, 3.14=>n=2
 function nextPage(){
     var pagesize = data['pagesize'];
     nowpage += 1;
-//    if (nowpage in result){
-//        table_result(result[nowpage], Number(pagesize));
-//    }else{
     data['nowpage'] = nowpage.toString();
     $.post("/", {"data":JSON.stringify(data)}, function(e){
         if (e!="0"){
             var back_data = eval('(' + e + ')');
-            //var cur_page = back_data['currentpage'];
-            //result[Number(cur_page)] = back_data;
             if (back_data['counts']==" "){
                 no_values();
             }else{
@@ -201,7 +194,6 @@ function nextPage(){
             no_values();
             }
         });
-    //}
 }
 
 //prev page
@@ -210,7 +202,6 @@ function prevPage(){
     nowpage -= 1;
     var pagesize = data['pagesize']
     data['nowpage'] = nowpage.toString();
-    //var back_data = result[nowpage];
     $.post("/", {"data":JSON.stringify(data)}, function(e){
         if(e != "0"){
             var back_data = eval('(' + e + ')');
@@ -221,7 +212,6 @@ function prevPage(){
             }
         }else{no_values();}
     });
-    //table_result(back_data,Number(data['pagesize']));
 }
 
 //change the iterms per page, then return the call in webpage
@@ -232,12 +222,10 @@ $(document).ready(function(){
             pagesize = $(this).children('option:selected').val();
             data['pagesize'] = pagesize;
             data['nowpage'] = '1';
+            nowpage = 1;
             $.post("/", {"data":JSON.stringify(data)}, function(e){
                 if (e!="0"){
                     var back_data = eval('(' + e + ')');
-                    //var cur_page = back_data['currentpage'];
-                    //result = {};
-                    //result[Number(cur_page)] = back_data;
                     if (back_data['counts']==" "){
                         no_values();
                     }else{
@@ -275,19 +263,13 @@ function getJson(){
     });
 }
 
-
-
-function backTable(){
-        var back_data = result[nowpage];
-        var pagesize = back_data['pagesize'];
-        table_result(back_data,Number(pagesize));
-        $('#tableandjson').html("<input id='getjson' style='margin-left:2em;width:16em' class='pure-button pure-button-primary' onclick='getJson()' value='Click here to get Json' type='button'>");
-}
+//sort by one title
 
 function sortCol(n){
     var title = document.getElementsByTagName('th')[n].innerHTML ;
     data['bysort'] = title;
     data['nowpage'] = '1';
+    nowpage = 1;
     $.post("/", {"data":JSON.stringify(data)}, function(e){
         if (e!="0"){
             var back_data = eval('(' + e + ')');
@@ -296,9 +278,15 @@ function sortCol(n){
             }else{
                 var pagesize = data['pagesize'];
                 table_result(back_data,Number(pagesize));
+                var th = document.getElementsByTagName('th')[n];
+                th.style.cssText="background-color: yellow"; 
+                $("td").filter(":nth-child(" + (n+1) + ")").css("background-color", "#f3fca4");
+                //var td = document.getElementsByTagName('td')[n];
+                //td.style.cssText="background-color: #f3fca4";
             }
         }else{
             no_values();
         }
     });
 }
+
