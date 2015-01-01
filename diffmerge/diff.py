@@ -12,7 +12,7 @@ import jsonpatch
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
-
+sys.setrecursionlimit(3500)
 
 def diff(lastdb, newdb, time, ignore=None):
     
@@ -31,8 +31,8 @@ def diff(lastdb, newdb, time, ignore=None):
     gene_last = [ ele["_id"] for ele in lastdb.find({},{'_id':1}) ]
     gene_new = [ ele["_id"] for ele in newdb.find({},{'_id':1}) ]
     
-    gene_last_count = len(gene_last)
-    gene_new_count = len(gene_new)
+    gene_last_count = len(list(gene_last))
+    gene_new_count = len(list(gene_new))
 
     #将操作信息记录日志中
     oldname = diffmethod.collection_name(lastdb)
@@ -83,7 +83,7 @@ def diff(lastdb, newdb, time, ignore=None):
             ign_dict = dict( (el, 0) for el in ignore )
         else:
             ign_dict = {}
-
+        
         for i in shared_gene:
             if ign_dict:
                 last_content = lastdb.find_one( {"_id":i}, ign_dict )
@@ -92,12 +92,9 @@ def diff(lastdb, newdb, time, ignore=None):
                 last_content = lastdb.find_one( {"_id":i} )
                 new_content = newdb.find_one( {"_id":i} )
             
-            patch = jsonpatch.JsonPatch.from_diff(last_content, new_content)
-            diff_lst = list(patch)
-            #if cmp(last_content, new_content) !=0:
-                #diff = diffmethod.DiffJson(last_content, new_content)
-                #diff_lst = diff.diffDict()
-            if diff_lst:
+            if cmp(last_content, new_content) !=0:
+                patch = jsonpatch.JsonPatch.from_diff(last_content, new_content)
+                diff_lst = list(patch)
                 db_change.insert( {"gene_id":i, "stat":"replace", "value":diff_lst, "timestamp":time} )
                 replace_count +=1
     else:
