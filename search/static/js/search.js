@@ -1,6 +1,7 @@
 var data = new Object();        //post to tornado
 var nowpage = 1;                //current page
 
+$body = $("body");
 //click query button to search and display the result in webpage
 
 $(document).ready(function(){
@@ -44,8 +45,10 @@ $(document).ready(function(){
         nowpage = 1;
         data['format'] = 'table';
         data['bysort'] = 'pos';
-    
+        
+        $body.addClass("loading");
         $.get("/search", {"data":JSON.stringify(data)}, function(e){
+            $body.removeClass("loading");
             if (e!="0"){
                 var back_data = eval('(' + e + ')');
                 var cur_page = back_data['currentpage'];
