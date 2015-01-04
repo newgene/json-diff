@@ -45,7 +45,7 @@ $(document).ready(function(){
         data['format'] = 'table';
         data['bysort'] = 'pos';
     
-        $.post("/", {"data":JSON.stringify(data)}, function(e){
+        $.get("/search", {"data":JSON.stringify(data)}, function(e){
             if (e!="0"){
                 var back_data = eval('(' + e + ')');
                 var cur_page = back_data['currentpage'];
@@ -53,7 +53,7 @@ $(document).ready(function(){
                     no_values();
                 }else{
                     table_result(back_data,Number(pagesize));
-                    $('#tableandjson').html("<input id='getjson' style='margin-left:2em;width:16em' class='pure-button pure-button-primary' onclick='getJson()' value='Click here to get JSON' type='button'>");
+                    $('#tableandjson').html("<a id='getjson' style='margin-left:2em;width:16em; cursor:pointer; color:white' onclick='getJson()'> Click here to get JSON </a>");
                 }
             }else{
                 no_values();
@@ -65,7 +65,7 @@ $(document).ready(function(){
 //query nothing, then do this
 
 function no_values(){
-    $('#Searchresult').html("<div><h2 class='post-title'>Opps, the data you want was not found.</h2></div>");    
+    $('#Searchresult').html("<div><h2 class='post-title'>No variants match your query.</h2></div>");    
     $('#tableandjson').html(" ");
 }
 
@@ -181,7 +181,7 @@ function nextPage(){
     var pagesize = data['pagesize'];
     nowpage += 1;
     data['nowpage'] = nowpage.toString();
-    $.post("/", {"data":JSON.stringify(data)}, function(e){
+    $.get("/search", {"data":JSON.stringify(data)}, function(e){
         if (e!="0"){
             var back_data = eval('(' + e + ')');
             if (back_data['counts']==" "){
@@ -202,7 +202,7 @@ function prevPage(){
     nowpage -= 1;
     var pagesize = data['pagesize']
     data['nowpage'] = nowpage.toString();
-    $.post("/", {"data":JSON.stringify(data)}, function(e){
+    $.get("/search", {"data":JSON.stringify(data)}, function(e){
         if(e != "0"){
             var back_data = eval('(' + e + ')');
             if (back_data['counts']==" "){
@@ -223,7 +223,7 @@ $(document).ready(function(){
             data['pagesize'] = pagesize;
             data['nowpage'] = '1';
             nowpage = 1;
-            $.post("/", {"data":JSON.stringify(data)}, function(e){
+            $.get("/search", {"data":JSON.stringify(data)}, function(e){
                 if (e!="0"){
                     var back_data = eval('(' + e + ')');
                     if (back_data['counts']==" "){
@@ -253,14 +253,15 @@ function not_empty(obj){
 
 function getJson(){
     data['format'] = 'json';
-    $.post("/", {"data":JSON.stringify(data)}, function(e){
-        if (e!="0"){
-            document.write(e);
-        }
-        else{
-            no_values();
-        }
-    });
+    window.location.href="/search?data="+JSON.stringify(data);
+    //$.get("/search", {"data":JSON.stringify(data)}, function(e){
+        //if (e!="0"){
+        //    document.write(e);
+        //}
+        //else{
+        //    no_values();
+        //}
+    //});
 }
 
 //sort by one title
@@ -270,7 +271,7 @@ function sortCol(n){
     data['bysort'] = title;
     data['nowpage'] = '1';
     nowpage = 1;
-    $.post("/", {"data":JSON.stringify(data)}, function(e){
+    $.get("/search", {"data":JSON.stringify(data)}, function(e){
         if (e!="0"){
             var back_data = eval('(' + e + ')');
             if (back_data['counts']==" "){

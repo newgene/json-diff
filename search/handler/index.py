@@ -17,8 +17,11 @@ class IndexHandler(tornado.web.RequestHandler):
             self.render("index.html",searched=0)
         else:
             self.render("index.html",searched=1)
-    
-    def post(self):
+
+
+class SearchHandler(tornado.web.RequestHandler):
+    #def post(self):
+    def get(self):
         content = self.get_argument("data")
         content = tornado.escape.json_decode(content)
 
