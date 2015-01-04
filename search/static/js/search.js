@@ -184,7 +184,9 @@ function nextPage(){
     var pagesize = data['pagesize'];
     nowpage += 1;
     data['nowpage'] = nowpage.toString();
+    $body.addClass("loading");
     $.get("/search", {"data":JSON.stringify(data)}, function(e){
+        $body.removeClass("loading");
         if (e!="0"){
             var back_data = eval('(' + e + ')');
             if (back_data['counts']==" "){
@@ -205,7 +207,9 @@ function prevPage(){
     nowpage -= 1;
     var pagesize = data['pagesize']
     data['nowpage'] = nowpage.toString();
+    $body.addClass("loading");
     $.get("/search", {"data":JSON.stringify(data)}, function(e){
+        $body.removeClass("loading");
         if(e != "0"){
             var back_data = eval('(' + e + ')');
             if (back_data['counts']==" "){
@@ -226,7 +230,9 @@ $(document).ready(function(){
             data['pagesize'] = pagesize;
             data['nowpage'] = '1';
             nowpage = 1;
+            $body.addClass("loading");
             $.get("/search", {"data":JSON.stringify(data)}, function(e){
+                $body.removeClass("loading");
                 if (e!="0"){
                     var back_data = eval('(' + e + ')');
                     if (back_data['counts']==" "){
@@ -274,7 +280,9 @@ function sortCol(n){
     data['bysort'] = title;
     data['nowpage'] = '1';
     nowpage = 1;
+    $body.addClass("loading");
     $.get("/search", {"data":JSON.stringify(data)}, function(e){
+        $body.removeClass("loading");
         if (e!="0"){
             var back_data = eval('(' + e + ')');
             if (back_data['counts']==" "){
