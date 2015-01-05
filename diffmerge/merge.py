@@ -45,6 +45,11 @@ def merge(lastdb, newdb, diffdb):
                 except:
                     not_merged.append(gene["gene_id"])
     print not_merged
+    if not_merged:
+        for i in not_merged:
+            new_gene = newdb.find_one({"_id":i})
+            lastdb.update({"_id":i}, new_gene)
+            
 
 def main():
     print ">>>Hi, I am Qiwei. Welcome to my website: www.itdiffer.com<<<"
