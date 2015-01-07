@@ -27,29 +27,64 @@ def merge(lastdb, newdb, diffdb):
     diffdb: the database that is the update/newly add/remove parts new gene database relativality old database
     """
     #merge = diffdb.find()
-    merge_id = [ ele["_id"] for ele in diffdb.find({},{'_id':1}) ]
+    #merge_id = [ ele["gene_id"] for ele in diffdb.find() ]
+    stat_add_id = [ele["gene_id"] for ele in diffdb.find({"stat":"add"})]
+    stat_remove_id = [ele["gene_id"] for ele in diffdb.find({"stat":"remove"})]
+    stat_replace_id = [ele["gene_id"] for ele in diffdb.find({"stat":"replace"})]
+    
+    merge_num = 0
+
+    if stat_add_id:
+        have_a_rest = 0
+        for i in stat_add_id:
+            gene = diffdb.find_one({"gene_id":i})
+            lastdb.insert(gene['value'])
+            merge_num += 1
+            have_a_rest += 1
+            if have_a_rest == 200:
+                time.sleep(1)
+                have_a_rest = 0
+
+    if stat_remove_id:
+        have_a_rest = 0
+        for i in stat_remove_id:
+            lastdb.remove({"_id":i})
+            merge_num += 1
+            have_a_rest += 1
+            if have_a_rest == 200:
+                time.sleep(1)
+                have_a_rest = 0
+
     not_merged = []
-    for i in merge_id:
-        gene = diffdb.find_one({"_id":i})
-        if gene["stat"] == "add":
-            lastdb.insert(gene["value"])
-        if gene["stat"] == "remove":
-            lastdb.remove({"_id":gene["gene_id"]})
-        if gene["stat"] == "replace":
-            last_gene = lastdb.find_one({"_id":gene["gene_id"]})
+    if stat_replace_id:
+        have_a_rest = 0
+        for i in stat_replace_id:
+            last_gene = lastdb.find_one({"_id":i})
             patch_lst = gene["value"]
             if patch_lst:
                 try:
                     new_gene = jsonpatch.apply_patch(last_gene, patch_lst, in_place=True)
-                    lastdb.update({"_id":gene["gene_id"]}, new_gene)
+                    lastdb.update({"_id":i}, new_gene)
+                    merge_num += 1
+                    have_a_rest += 1
+                    if have_a_rest == 200:
+                        time.sleep(1)
+                        have_a_rest = 0
                 except:
-                    not_merged.append(gene["gene_id"])
-    print not_merged
+                    not_merged.append(i)
+
     if not_merged:
+        have_a_rest = 0
         for i in not_merged:
             new_gene = newdb.find_one({"_id":i})
             lastdb.update({"_id":i}, new_gene)
-            
+            merge_num += 1
+            have_a_rest += 1
+            if have_a_rest == 200:
+                time.sleep(1)
+                have_a_rest = 0
+    
+    print merge_num
 
 def main():
     print ">>>Hi, I am Qiwei. Welcome to my website: www.itdiffer.com<<<"
@@ -57,6 +92,8 @@ def main():
     
     lastdb = db.genedoc_mygene_20141019_efqag2hg
     newdb = db.genedoc_mygene_20141026_g6svo5ct
+    #lastdb = db.part_old
+    #newdb = db.part_new
     diffdb = db.genechanges      #genechange是存储变更的数据的collection
 
     merge(lastdb, newdb, diffdb)

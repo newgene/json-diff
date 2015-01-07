@@ -14,7 +14,7 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 sys.setrecursionlimit(3500)
 
-def diff(lastdb, newdb, time, ignore=None):
+def diff(lastdb, newdb, ttime, ignore=None):
     
     """
     find the difference between the two JSONs.
@@ -22,10 +22,10 @@ def diff(lastdb, newdb, time, ignore=None):
     newdb: new collection
     ignore: the neglected first level key of json in comparison, default is None, or like igore=['timetamp',]
     """
-    if isinstance(time,str):
-        time = time.split(".")[0]
+    if isinstance(ttime,str):
+        timestamp = ttime.split(".")[0]
     else:
-        time = str(time).split(".")[0]
+        timestamp = str(ttime).split(".")[0]
 
     
     gene_last = [ ele["_id"] for ele in lastdb.find({},{'_id':1}) ]
@@ -42,13 +42,13 @@ def diff(lastdb, newdb, time, ignore=None):
     if ignore:
         db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count}, 
                         "newdb":{"name":gene_new_name, "count":gene_new_count},
-                        "timestamp":time,
+                        "timestamp":timestamp,
                         "extra_parameters":ignore
                         })
     else:
         db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count}, 
                         "newdb":{"name":gene_new_name, "count":gene_new_count},
-                        "timestamp":time,
+                        "timestamp":timestamp,
                         })
 
 
@@ -60,24 +60,35 @@ def diff(lastdb, newdb, time, ignore=None):
 
     #insert the new values into the database.
     if add_gene:
+        have_a_rest = 0
         add_count = len(add_gene)
         for i in add_gene:
             one_gene = newdb.find_one( {"_id":i} )
-            db_change.insert( {"gene_id":i, "stat":"add", "value":one_gene, "timestamp":time} )
+            db_change.insert( {"gene_id":i, "stat":"add", "value":one_gene, "timestamp":timestamp} )
+            have_a_rest +=1
+            if have_a_rest == 200:
+                time.sleep(1)
+                have_a_rest = 0
     else:
         add_count = 0
 
     #store the deleted IDs        
     if deleted_gene:
+        have_a_rest = 0
         remove_count = len(deleted_gene)
         for i in deleted_gene:
             one_gene = lastdb.find_one( {"_id":i} )
-            db_change.insert( {"gene_id":i, "stat":"remove", "timestamp":time} )
+            db_change.insert( {"gene_id":i, "stat":"remove", "timestamp":timestamp} )
+            have_a_rest +=1
+            if have_a_rest == 200:
+                time.sleep(1)
+                have_a_rest = 0
     else:
         remove_count = 0
 
     #store the records in which the values have been changed
     if shared_gene:
+        have_a_rest = 0
         replace_count = 0
         if ignore:      #判断是否有忽略判断，如果有则生成一个忽略的dictionary
             ign_dict = dict( (el, 0) for el in ignore )
@@ -95,15 +106,20 @@ def diff(lastdb, newdb, time, ignore=None):
             if cmp(last_content, new_content) !=0:
                 patch = jsonpatch.JsonPatch.from_diff(last_content, new_content)
                 diff_lst = list(patch)
-                db_change.insert( {"gene_id":i, "stat":"replace", "value":diff_lst, "timestamp":time} )
+                db_change.insert( {"gene_id":i, "stat":"replace", "value":diff_lst, "timestamp":timestamp} )
                 replace_count +=1
+                have_a_rest +=1
+                if have_a_rest == 200:
+                    time.sleep(1)
+                    have_a_rest = 0
+
     else:
         replace_count = 0
     
     #保存日志信息
     total = replace_count + remove_count + add_count
     stat = {"remove":remove_count, "add":add_count, "replace":replace_count, "total":total}
-    db_logs.update({"timestamp":time},{"$set":{"stat":stat}})
+    db_logs.update({"timestamp":timestamp},{"$set":{"stat":stat}})
 
 
 def main():
@@ -113,7 +129,8 @@ def main():
 
     lastdb = db.genedoc_mygene_20141019_efqag2hg
     newdb = db.genedoc_mygene_20141026_g6svo5ct
-    
+    #lastdb = db.part_old
+    #newdb = db.part_new
     atime = str(datetime.datetime.today())    
     
     diff(lastdb, newdb, atime)
