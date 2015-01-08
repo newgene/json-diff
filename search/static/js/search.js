@@ -100,10 +100,10 @@ function table_result(data,pagesize){
     circle_num = rangePage(current_page,total_lines,total_pages,pagesize)
     for (var i=0; i<circle_num; i++ ){
         if (i%2!=0){
-            new_tr = "<tr class='pure-table-odd'><td>"+results[i]['chr']+"</td><td>"+results[i]['pos']+"</td><td>"+results[i]['vartype']+"</td><td>"+wordBreak(results[i]['ref'])+"</td><td>"+genotypes(results[i]['genotypes'])+"</td><td>"+freqs(results[i]['genotype_freqs'])+"</td><td>"+freqs(results[i]['allele_freqs'])+"</td></tr>";
+            new_tr = "<tr class='pure-table-odd'><td>"+results[i]['chr']+"</td><td>"+results[i]['pos']+"</td><td>"+results[i]['vartype']+"</td><td style='word-break:break-all;word-wrap:break-word'>"+results[i]['ref']+"</td><td style='word-break:break-all;word-wrap:break-word;'>"+genotypes(results[i]['genotypes'])+"</td><td style='word-break:break-all;word-wrap:break-word;'>"+freqs(results[i]['genotype_freqs'])+"</td><td style='word-break:break-all;word-wrap:break-word;'>"+freqs(results[i]['allele_freqs'])+"</td></tr>";
             new_table += new_tr;
             }else{
-            new_tr ="<tr><td>"+results[i]['chr']+"</td><td>"+results[i]['pos']+"</td><td>"+results[i]['vartype']+"</td><td>"+wordBreak(results[i]['ref'])+"</td><td>"+genotypes(results[i]['genotypes'])+"</td><td>"+freqs(results[i]['genotype_freqs'])+"</td><td>"+freqs(results[i]['allele_freqs'])+"</td></tr>";
+            new_tr ="<tr><td>"+results[i]['chr']+"</td><td>"+results[i]['pos']+"</td><td>"+results[i]['vartype']+"</td><td style='word-break:break-all;word-wrap:break-word'>"+results[i]['ref']+"</td><td style='word-break:break-all;word-wrap:break-word'>"+genotypes(results[i]['genotypes'])+"</td><td style='word-break:break-all;word-wrap:break-word;'>"+freqs(results[i]['genotype_freqs'])+"</td><td style='word-break:break-all;word-wrap:break-word;'>"+freqs(results[i]['allele_freqs'])+"</td></tr>";
             new_table += new_tr;
                 }
         }
@@ -116,7 +116,7 @@ function table_result(data,pagesize){
 function genotypes(data_object){
     var geno_result = "";
     for(var key in data_object){
-        geno_result += wordBreak(key) + ": " + data_object[key].length + "<br>";
+        geno_result += key + ": " + data_object[key].length + "<br>";
         }
     return geno_result;
     }
@@ -126,7 +126,7 @@ function genotypes(data_object){
 function freqs(data_object){
     var freqs_result = "";
     for (var key in data_object){
-        freqs_result += wordBreak(key) + ": " + changeDecimal(data_object[key],4) + "<br>";
+        freqs_result += key + ": " + changeDecimal(data_object[key],4) + "<br>";
         }
     return freqs_result;
     }
