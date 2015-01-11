@@ -3,6 +3,7 @@
 
 import tornado.web
 import json
+import urllib
 
 from db.db import *
 
@@ -24,28 +25,39 @@ class SearchHandler(tornado.web.RequestHandler):
     def get(self):
         content = self.get_argument("data")
         content = tornado.escape.json_decode(content)
-
-        page_size = content["pagesize"]
-        current_page = content["nowpage"]
-        display_format = content["format"]
-        by_sort = content["bysort"]
-
+        
+        
+        data_web = "http://myvariant.info/v1/"
         query_con = query_condition(content)
-        
-        sort_con = tuple([by_sort,1]) 
-        
+        query_url = data_web + query_con
+
+        print query_url
+
+        response = urllib.urlopen(query_url)
+        response_text = response.read()
+        result = tornado.escape.json_decode(response_text)
+        result_hits = result['hits']
+        counts = result['total']
+
         return_data = {}
 
-        if query_con:
-            begin_index = (int(current_page) - 1) * int(page_size)
-            que = db.find(query_con,{"_id":0}).sort([sort_con]).skip(begin_index).limit(int(page_size))
-            return_data['value'] = list(que)
-            counts = que.count()
-            pages = int(counts) / int(page_size) if int(counts) % int(page_size) == 0 else int(counts) / int(page_size) + 1
-            return_data['counts'] = int(counts)
-            return_data['pages'] = int(pages)
-            return_data['currentpage'] = int(current_page)
+        if counts:
+            search_value = [ line['wellderly'] for line in result_hits ]
+            #counts = len(search_value)
+            print counts
+            
+            nowpage = int(content['nowpage'])
+            page_size = int(content['pagesize'])
+            pages = counts / page_size if counts % page_size == 0 else counts / page_size + 1
+
+            return_data['value'] = search_value
+            return_data['counts'] = counts
+            return_data['pages'] = pages
+            return_data['currentpage'] = nowpage 
+            
+            display_format = content['format']
             return_data['format'] = display_format
+
             if display_format == "table":
                 data_json = json.dumps(return_data)
                 self.write(data_json)
@@ -60,24 +72,41 @@ class SearchHandler(tornado.web.RequestHandler):
 
 
 def query_condition(content):
-    query_con = {}
+    
+    q = "query?q=_exists_:wellderly"
+    
+    gene = content['gene']
+    gene_chr = content['chr']
     posstart = content['posstart']
     posend = content['posend']
     vartype = content['vartype']
+    
+    nowpage = str(int(content['nowpage'])-1)
+    pagesize = content['pagesize']
+
+    if gene != '-1':
+        q += " AND wellderly.gene:" + gene
+    
+    if gene_chr != '-1':
+        q += " AND wellderly.chr:" + gene_chr
 
     if posstart !="-1" and posend!='-1':
-        pos_con = {"$gte":int(posstart), "$lte":int(posend)}
-        query_con["pos"] = pos_con
+        q += " AND wellderly.pos:[" + posstart + " TO " + posend +"]"
     elif posstart !='-1':
-        query_con['pos'] = int(posstart)
+        q += " AND wellderly.pos:" + posstart
     elif posend !='-1':
-        query_con['pos'] = int(posend)
+        q += " AND wellderly.pos:" + posend
     else:
         pass
 
-    query_con['chr'] = content['chr']
+    if vartype != '-1':
+        q += " AND wellderly.vartype:" + vartype
+    
+    q += "&fields=wellderly&from=" + nowpage +"&size=" + pagesize
+    
+    return q 
 
-    if vartype !='-1':
-        query_con['vartype'] = vartype
-
-    return query_con
+def query_page(nowpage, pagesize):
+    q_page = "&fields=wellderly&from=" + nowpage +"&size=" + pagesize
+    return q_page
+    
