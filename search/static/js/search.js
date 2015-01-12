@@ -110,19 +110,19 @@ function table_result(data,pagesize){
     var results = data['value'];
     var current_page = data['currentpage'];
     var new_table = "<div class='post-description'>"
-        //+ "<table style='width:100%;table-layout:fixed;' class='pure-table'>"
-        + "<table class='pure-table'>"
+        + "<table style='width:100%;table-layout:fixed;' class='pure-table'>"
+        //+ "<table class='pure-table'>"
         + "<thead>"
         + "<tr>"
-            + "<th>chr</th>"
+            + "<th style='width:4em'>chr</th>"
             + "<th style='cursor:pointer' onclick='javascript:sortCol(1)'>pos</th>"
             + "<th style='cursor:pointer' onclick='javascript:sortCol(2)'>vartype</th>"
-            + "<th style='cursor:pointer' onclick='javascript:sortCol(3)'>ref</th>"
-            + "<th>alt</th>"
-            + "<th>genotypes</th>"
+            + "<th style='width:4em;cursor:pointer' onclick='javascript:sortCol(3)'>ref</th>"
+            + "<th style='width:4em'>alt</th>"
+            + "<th style='width:10em'>genotypes</th>"
             + "<th>alleles</th>"
             + "<th>gene</th>"
-            + "<th style='color:blue'>OPTION</th>"
+            + "<th style='color:blue; width:6em;'>OPTION</th>"
             //+ "<th>original_aa</th>"
             //+ "<th>allele_aa</th>"
             //+ "<th>protein_pos</th>"
@@ -160,8 +160,8 @@ function table_result(data,pagesize){
                 + "<td>"+results[i]['vartype']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['ref']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['alt']+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+genotypes(results[i]['genotypes'])+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+alleles(results[i]['alleles'])+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+fgenotypes(results[i]['genotypes'])+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'])+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['gene']+"</td>"
                 + "<td style='color:red;cursor:pointer' onclick='javascript:MoreGeneInfo("+JSON.stringify(results[i])+")'>More...</td>"
                 //+ "<td>"+results[i]['original_aa']+"</td>"
@@ -180,8 +180,8 @@ function table_result(data,pagesize){
                 + "<td>"+results[i]['vartype']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['ref']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['alt']+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word'>"+genotypes(results[i]['genotypes'])+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+alleles(results[i]['alleles'])+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word'>"+fgenotypes(results[i]['genotypes'])+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'])+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['gene']+"</td>"
                 + "<td style='color:green;cursor:pointer;' onclick='javascript:MoreGeneInfo("+JSON.stringify(results[i])+")'>More...</td>"
                 //+ "<td>"+results[i]['original_aa']+"</td>"
@@ -202,35 +202,44 @@ function table_result(data,pagesize){
 function MoreGeneInfo(gene_object){
     var chr = gene_object['chr'];  //"1",
     var pos = gene_object['pos'];  //21924946
-    var genotypes = gene_object['genotypes'];  // [{"count": 5,"freq": 0.025, "genotype": "T/C"}, {"count": 195, "freq": 0.975,"genotype": "T/T"}]
-    var alleles = gene_object['alleles'];  // [{"allele": "C", "freq": 0.0125}, {"allele": "T", "freq": 0.9875 }]
-    var protein_pos = gene_object['protein_pos'];  // ["694", "673", "635", "609"],
-    var polyphen = gene_object['polyphen'];  //["possibly damaging", "probably damaging"], 
-    var sift = gene_object['sift']; // "INTOLERANT", 
-    var vartype = gene_object['vartype'];  // "snp", 
-    var original_aa = gene_object['original_aa']; //"Y", 
-    var alt = gene_object['alt'];  // "C", 
     var gene = gene_object["gene"]; // "RAP1GAP", 
-    var ref = gene_object["ref"];  // "T", 
-    var allele_aa = gene_object["allele_aa"];  // "C", 
-    var coding_impact = gene_object["coding_impact"];  // "Nonsynonymous"
+    var vartype = gene_object['vartype'];  // "snp", 
+    var genotypes = fgenotypes1(gene_object['genotypes']);  // [{"count": 5,"freq": 0.025, "genotype": "T/C"}, {"count": 195, "freq": 0.975,"genotype": "T/T"}]
+    var alleles = falleles1(gene_object['alleles']);  // [{"allele": "C", "freq": 0.0125}, {"allele": "T", "freq": 0.9875 }]
+    var protein_pos = display_arry_element1(gene_object['protein_pos']);  // ["694", "673", "635", "609"],
+    var polyphen = display_arry_element1(gene_object['polyphen']);  //["possibly damaging", "probably damaging"], 
+    var sift = judge_string(gene_object['sift']); // "INTOLERANT", 
+    var original_aa = judge_string(gene_object['original_aa']); //"Y", 
+    var alt = judge_string(gene_object['alt']);  // "C", 
+    var ref = judge_string(gene_object["ref"]);  // "T", 
+    var allele_aa = judge_string(gene_object["allele_aa"]);  // "C", 
+    var coding_impact = judge_string(gene_object["coding_impact"]);  // "Nonsynonymous"
 
-    var innhtml = "<div background-color:white; color:black;><div style='padding:10px;'"
-                + "<p>chr: " + chr + "</p>"
-                + "<p>pos: " + pos + "</p>"
-                + "<p>gene: " + gene + "</p>"
-                + "<p>vartype: " + vartype + "</p>"
-                + "</div></div>";
-    //if (typeof data_arry == 'undefined'){
+    var innhtml = "<div background-color:white; color:black;><div style='padding:10px;'><table class='pure-table pure-table-bordered'>"
+                + "<tr><td>chr</td><td>" + chr + "</td></tr>"
+                + "<tr><td>pos</td><td>" + pos + "</td></tr>"
+                + "<tr><td>gene</td><td>" + gene + "</td></tr>"
+                + "<tr><td>vartype</td><td>" + vartype + "</td></tr>"
+                + "<tr><td>genotypes</td><td>" + genotypes + "</td></tr>"
+                + "<tr><td>alleles</td><td>" + alleles + "</td></tr>"
+                + "<tr><td>protein_pos</td><td>" + protein_pos + "</td></tr>"
+                + "<tr><td>polyphen</td><td>" + polyphen + "</td></tr>"
+                + "<tr><td>sift</td><td>" + sift + "</td></tr>"
+                + "<tr><td>original_aa</td><td>" + original_aa + "</td></tr>"
+                + "<tr><td>alt</td><td>" + alt + "</td></tr>"
+                + "<tr><td>ref</td><td>" + ref + "</td></tr>"
+                + "<tr><td>allele_aa</td><td>" + allele_aa + "</td></tr>"
+                + "<tr><td>coding_impact</td><td>" + coding_impact + "</td></tr>"
+                + "</table></div></div>";
 
     var pagei = $.layer({
            type: 1,   //0-4的选择,
-           title: pos,
-           offset: ['50px',''],
+           title: 'DETAIL->POS: ' + pos,
+           offset: ['30px',''],
            border: [0],
            closeBtn: [1,true],
            shadeClose: true,
-           area: ['460px', '280px'],
+           area: ['460px', '650px'],
            page: {
                  html: innhtml
                  }
@@ -239,20 +248,53 @@ function MoreGeneInfo(gene_object){
 
 //the values of genotypes filed: key:len(values)
 
-function genotypes(data_arry){
-    var geno_result = "";
-    for (var i=0; i<data_arry.length; ++i){
-        geno_result += data_arry[i]['genotype'] +': ' + data_arry[i]['count'] + '(' + data_arry[i]['freq'] + ')<br>'
+function fgenotypes(data_arry){
+    if(typeof data_arry =='undefined'){
+        return "";
+    }else{
+        var geno_result = "";
+        for (var i=0; i<data_arry.length; ++i){
+            geno_result += data_arry[i]['genotype'] +': ' + data_arry[i]['count'] + '(' + data_arry[i]['freq'].toFixed(2) + ')<br> '
+        }
+        return geno_result;
     }
-    return geno_result;
 }
 
-function alleles(data_arry){
-    var geno_result = "";
-    for (var i=0; i<data_arry.length; ++i){
-        geno_result += data_arry[i]['allele'] +': ' + data_arry[i]['freq'] + '<br>'
+function fgenotypes1(data_arry){
+    if(typeof data_arry =='undefined'){
+        return "";
+    }else{
+        var geno_result = "";
+        for (var i=0; i<data_arry.length; ++i){
+            geno_result += data_arry[i]['genotype'] +': ' + data_arry[i]['count'] + '(' + data_arry[i]['freq'].toFixed(2) + '), '
+        }
+        return geno_result;
     }
-    return geno_result;
+}
+
+function falleles(data_arry){
+    if(typeof data_arry =='undefined'){
+        return "";
+    }else{
+        var geno_result = "";
+        for (var i=0; i<data_arry.length; ++i){
+            geno_result += data_arry[i]['allele'] +': ' + data_arry[i]['freq'].toFixed(3) + '<br>'
+        }
+        return geno_result;
+    }
+}
+
+
+function falleles1(data_arry){
+    if(typeof data_arry =='undefined'){
+        return "";
+    }else{
+        var geno_result = "";
+        for (var i=0; i<data_arry.length; ++i){
+            geno_result += data_arry[i]['allele'] +': ' + data_arry[i]['freq'].toFixed(3) + ', '
+        }
+        return geno_result;
+    }
 }
 
 function display_arry_element(data_arry){
@@ -265,6 +307,27 @@ function display_arry_element(data_arry){
             data_result += data_arry[i] +",<br>"
         }
         return data_result;
+    }
+}
+
+function display_arry_element1(data_arry){
+    if (typeof data_arry == 'undefined'){
+        return "";
+    }
+    else{
+        var data_result = "";
+        for (var i=0; i<data_arry.length; ++i){
+            data_result += data_arry[i] +",  "
+        }
+        return data_result;
+    }
+}
+
+function judge_string(data_string){
+    if (typeof data_string == 'undefined'){
+        return "";
+    }else{
+        return data_string;
     }
 }
 //the values of genotype_freqs and allele_freqs, and the decimal is less 4, and the letter of one line less 10
