@@ -2,8 +2,6 @@ var data = new Object();        //post to tornado
 var nowpage = 1;                //current page
 
 $body = $("body");
-//click query button to search and display the result in webpage
-
 
 //contruct the Object data 
 function DataKeyValue(key, value, format){    //format is "number" or "letter"
@@ -54,7 +52,6 @@ $(document).ready(function(){
         if (posstart || posend){
             if (chr=="-1"){
                 data['chr'] = '1';
-                //alert("Please choose chr");
             }else{
             data['chr'] = chr;
             }
@@ -115,9 +112,11 @@ function table_result(data,pagesize){
         + "<thead>"
         + "<tr>"
             + "<th style='width:4em'>chr</th>"
-            + "<th style='cursor:pointer' onclick='javascript:sortCol(1)'>pos</th>"
-            + "<th style='cursor:pointer' onclick='javascript:sortCol(2)'>vartype</th>"
-            + "<th style='width:4em;cursor:pointer' onclick='javascript:sortCol(3)'>ref</th>"
+            //+ "<th style='cursor:pointer' onclick='javascript:sortCol(1)'>pos</th>"
+            + "<th>pos</th>"
+            //+ "<th style='cursor:pointer' onclick='javascript:sortCol(2)'>vartype</th>"
+            + "<th>vartype</th>"
+            + "<th style='width:4em;'>ref</th>"
             + "<th style='width:4em'>alt</th>"
             + "<th style='width:10em'>genotypes</th>"
             + "<th>alleles</th>"
@@ -160,8 +159,8 @@ function table_result(data,pagesize){
                 + "<td>"+results[i]['vartype']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['ref']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['alt']+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+fgenotypes(results[i]['genotypes'])+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'])+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+fgenotypes(results[i]['genotypes'], '<br>')+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'], '<br>')+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['gene']+"</td>"
                 + "<td style='color:red;cursor:pointer' onclick='javascript:MoreGeneInfo("+JSON.stringify(results[i])+")'>More...</td>"
                 //+ "<td>"+results[i]['original_aa']+"</td>"
@@ -180,8 +179,8 @@ function table_result(data,pagesize){
                 + "<td>"+results[i]['vartype']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['ref']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['alt']+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word'>"+fgenotypes(results[i]['genotypes'])+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'])+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word'>"+fgenotypes(results[i]['genotypes'], '<br>')+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'], '<br>')+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['gene']+"</td>"
                 + "<td style='color:green;cursor:pointer;' onclick='javascript:MoreGeneInfo("+JSON.stringify(results[i])+")'>More...</td>"
                 //+ "<td>"+results[i]['original_aa']+"</td>"
@@ -204,10 +203,10 @@ function MoreGeneInfo(gene_object){
     var pos = gene_object['pos'];  //21924946
     var gene = gene_object["gene"]; // "RAP1GAP", 
     var vartype = gene_object['vartype'];  // "snp", 
-    var genotypes = fgenotypes1(gene_object['genotypes']);  // [{"count": 5,"freq": 0.025, "genotype": "T/C"}, {"count": 195, "freq": 0.975,"genotype": "T/T"}]
-    var alleles = falleles1(gene_object['alleles']);  // [{"allele": "C", "freq": 0.0125}, {"allele": "T", "freq": 0.9875 }]
-    var protein_pos = display_arry_element1(gene_object['protein_pos']);  // ["694", "673", "635", "609"],
-    var polyphen = display_arry_element1(gene_object['polyphen']);  //["possibly damaging", "probably damaging"], 
+    var genotypes = fgenotypes(gene_object['genotypes'], ', ');  // [{"count": 5,"freq": 0.025, "genotype": "T/C"}, {"count": 195, "freq": 0.975,"genotype": "T/T"}]
+    var alleles = falleles(gene_object['alleles'], ', ');  // [{"allele": "C", "freq": 0.0125}, {"allele": "T", "freq": 0.9875 }]
+    var protein_pos = display_arry_element(gene_object['protein_pos'], ', ');  // ["694", "673", "635", "609"],
+    var polyphen = display_arry_element(gene_object['polyphen'], ', ');  //["possibly damaging", "probably damaging"], 
     var sift = judge_string(gene_object['sift']); // "INTOLERANT", 
     var original_aa = judge_string(gene_object['original_aa']); //"Y", 
     var alt = judge_string(gene_object['alt']);  // "C", 
@@ -248,80 +247,51 @@ function MoreGeneInfo(gene_object){
 
 //the values of genotypes filed: key:len(values)
 
-function fgenotypes(data_arry){
+function fgenotypes(data_arry, space_sign){
     if(typeof data_arry =='undefined'){
         return "";
     }else{
         var geno_result = "";
         for (var i=0; i<data_arry.length; ++i){
-            geno_result += data_arry[i]['genotype'] +': ' + data_arry[i]['count'] + '(' + data_arry[i]['freq'].toFixed(2) + ')<br> '
-        }
-        return geno_result;
-    }
-}
-
-function fgenotypes1(data_arry){
-    if(typeof data_arry =='undefined'){
-        return "";
-    }else{
-        var geno_result = "";
-        for (var i=0; i<data_arry.length; ++i){
-            geno_result += data_arry[i]['genotype'] +': ' + data_arry[i]['count'] + '(' + data_arry[i]['freq'].toFixed(2) + '), '
-        }
-        return geno_result;
-    }
-}
-
-function falleles(data_arry){
-    if(typeof data_arry =='undefined'){
-        return "";
-    }else{
-        var geno_result = "";
-        for (var i=0; i<data_arry.length; ++i){
-            geno_result += data_arry[i]['allele'] +': ' + data_arry[i]['freq'].toFixed(3) + '<br>'
+            geno_result += data_arry[i]['genotype'] +': ' + data_arry[i]['count'] + '(' + data_arry[i]['freq'].toFixed(2) + ')' + space_sign
         }
         return geno_result;
     }
 }
 
 
-function falleles1(data_arry){
+function falleles(data_arry, space_sign){
     if(typeof data_arry =='undefined'){
         return "";
     }else{
         var geno_result = "";
         for (var i=0; i<data_arry.length; ++i){
-            geno_result += data_arry[i]['allele'] +': ' + data_arry[i]['freq'].toFixed(3) + ', '
+            geno_result += data_arry[i]['allele'] +': ' + data_arry[i]['freq'].toFixed(3) + space_sign 
         }
         return geno_result;
     }
 }
 
-function display_arry_element(data_arry){
+
+function display_arry_element(data_arry, space_sign){
     if (typeof data_arry == 'undefined'){
         return "";
     }
-    else{
+    else if (data_arry.constructor==String){
+        return data_arry;
+    }
+    else if (data_arry.constructor==Array){
         var data_result = "";
         for (var i=0; i<data_arry.length; ++i){
-            data_result += data_arry[i] +",<br>"
+            data_result += data_arry[i] + space_sign;
         }
         return data_result;
+    }
+    else{
+        return "";
     }
 }
 
-function display_arry_element1(data_arry){
-    if (typeof data_arry == 'undefined'){
-        return "";
-    }
-    else{
-        var data_result = "";
-        for (var i=0; i<data_arry.length; ++i){
-            data_result += data_arry[i] +",  "
-        }
-        return data_result;
-    }
-}
 
 function judge_string(data_string){
     if (typeof data_string == 'undefined'){
@@ -330,15 +300,6 @@ function judge_string(data_string){
         return data_string;
     }
 }
-//the values of genotype_freqs and allele_freqs, and the decimal is less 4, and the letter of one line less 10
-
-function freqs(data_object){
-    var freqs_result = "";
-    for (var key in data_object){
-        freqs_result += key + ": " + changeDecimal(data_object[key],4) + "<br>";
-        }
-    return freqs_result;
-    }
 
 //in one page, the range of lines
 
@@ -352,40 +313,6 @@ function rangePage(current_page,total_lines,total_pages,page_size){
         }
 }
 
-//if the letter is more than 10, then break and turn to next line
-
-function wordBreak(word_string){
-    var breaked = '';
-    var word_length = word_string.length;
-    if (word_length<11){
-        return word_string;
-    }else{
-        var n = parseInt(word_length/10);
-        var poi = 0;
-        for(var i=0; i<n; i++){
-            breaked += word_string.substr(poi,10) +"<br>";
-            poi +=10;
-        }
-        breaked += word_string.substr(poi);
-        return breaked;
-    }
-}
-
-//The argument('num_string') is a decimal or not, if is, then return it and less 'n' of its decimal
-
-function changeDecimal(num_string,n){  //n is the length of decimal, 3.14=>n=2
-    if (String(num_string).indexOf(".")>-1){
-        var decimal_string = String(num_string).split(".")[1];
-        var decimal_length = decimal_string.length;
-        if (decimal_length>n){
-            return parseFloat(num_string).toFixed(n);
-        }else{
-            return num_string;
-        }
-    }else{
-        return num_string;
-    }
-}
 
 //next page
 
@@ -396,17 +323,7 @@ function nextPage(){
     $body.addClass("loading");
     $.get("/search", {"data":JSON.stringify(data)}, function(e){
         $body.removeClass("loading");
-        if (e!="0"){
-            var back_data = eval('(' + e + ')');
-            if (back_data['counts']==" "){
-                no_values();
-            }else{
-                table_result(back_data,Number(pagesize));
-            }
-
-        }else{
-            no_values();
-            }
+        display_table(e, pagesize);
         });
 }
 
@@ -419,14 +336,7 @@ function prevPage(){
     $body.addClass("loading");
     $.get("/search", {"data":JSON.stringify(data)}, function(e){
         $body.removeClass("loading");
-        if(e != "0"){
-            var back_data = eval('(' + e + ')');
-            if (back_data['counts']==" "){
-                no_values();
-            }else{
-                table_result(back_data,Number(pagesize));
-            }
-        }else{no_values();}
+        display_table(e, pagesize);
     });
 }
 
@@ -442,17 +352,7 @@ $(document).ready(function(){
             $body.addClass("loading");
             $.get("/search", {"data":JSON.stringify(data)}, function(e){
                 $body.removeClass("loading");
-                if (e!="0"){
-                    var back_data = eval('(' + e + ')');
-                    if (back_data['counts']==" "){
-                        no_values();
-                    }else{
-                        table_result(back_data,Number(pagesize));
-                    }
-
-                }else{
-                    no_values();
-                    }
+                display_table(e, pagesize);
             });
         }
         });
@@ -467,20 +367,6 @@ function not_empty(obj){
     return false;
     };
 
-//return the Json of result
-
-function getJson(){
-    data['format'] = 'json';
-    window.location.href="/search?data="+JSON.stringify(data);
-    //$.get("/search", {"data":JSON.stringify(data)}, function(e){
-        //if (e!="0"){
-        //    document.write(e);
-        //}
-        //else{
-        //    no_values();
-        //}
-    //});
-}
 
 //sort by one title
 
@@ -502,8 +388,6 @@ function sortCol(n){
                 var th = document.getElementsByTagName('th')[n];
                 th.style.cssText="background-color: yellow"; 
                 $("td").filter(":nth-child(" + (n+1) + ")").css("background-color", "#f3fca4");
-                //var td = document.getElementsByTagName('td')[n];
-                //td.style.cssText="background-color: #f3fca4";
             }
         }else{
             no_values();
