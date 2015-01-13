@@ -26,7 +26,6 @@ class SearchHandler(tornado.web.RequestHandler):
         content = self.get_argument("data")
         content = tornado.escape.json_decode(content)
         
-        
         data_web = "http://myvariant.info/v1/"
         query_con = query_condition(content)
         query_url = data_web + query_con
@@ -80,7 +79,8 @@ def query_condition(content):
     posstart = content['posstart']
     posend = content['posend']
     vartype = content['vartype']
-    
+    sort_value = content['bysort']
+
     nowpage = str(int(content['nowpage'])-1)
     pagesize = content['pagesize']
 
@@ -103,7 +103,15 @@ def query_condition(content):
         q += " AND wellderly.vartype:" + vartype
     
     q += "&fields=wellderly&from=" + nowpage +"&size=" + pagesize
-    
+
+    if ',' in sort_value:
+        sort_lst = ['wellderly.' + v for v in sort_value.split(',')]
+        sort_str = ",".join(sort_lst)
+    else:
+        sort_str = 'wellderly.' + sort_value
+
+    q += "&sort=" + sort_str
+
     return q 
 
 def query_page(nowpage, pagesize):

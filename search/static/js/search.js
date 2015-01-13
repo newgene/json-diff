@@ -63,7 +63,7 @@ $(document).ready(function(){
         data['nowpage'] = '1';
         nowpage = 1;
         data['format'] = 'table';
-        data['bysort'] = 'pos';
+        data['bysort'] = 'chr,pos';
         
         $body.addClass("loading");
         $.get("/search", {"data":JSON.stringify(data)}, function(e){
@@ -111,26 +111,15 @@ function table_result(data,pagesize){
         //+ "<table class='pure-table'>"
         + "<thead>"
         + "<tr>"
-            + "<th style='width:4em'>chr</th>"
-            //+ "<th style='cursor:pointer' onclick='javascript:sortCol(1)'>pos</th>"
-            + "<th>pos</th>"
-            //+ "<th style='cursor:pointer' onclick='javascript:sortCol(2)'>vartype</th>"
-            + "<th>vartype</th>"
-            + "<th style='width:4em;'>ref</th>"
-            + "<th style='width:4em'>alt</th>"
-            + "<th style='width:10em'>genotypes</th>"
+            + "<th style='width:4em; cursor:pointer;' onclick='javascript:sortCol(0)'>chr</th>"
+            + "<th style='cursor:pointer' onclick='javascript:sortCol(1)'>pos</th>"
+            + "<th style='width:6em;cursor:pointer' onclick='javascript:sortCol(2)'>vartype</th>"
+            + "<th style='width:4em;cursor:pointer' onclick='javascript:sortCol(3)'>ref</th>"
+            + "<th style='width:4em;cursor:pointer' onclick='javascript:sortCol(4)'>alt</th>"
+            + "<th style='width:9em'>genotypes</th>"
             + "<th>alleles</th>"
-            + "<th>gene</th>"
+            + "<th style='cursor:pointer' onclick='javascript:sortCol(7)'>gene</th>"
             + "<th style='color:blue; width:6em;'>OPTION</th>"
-            //+ "<th>original_aa</th>"
-            //+ "<th>allele_aa</th>"
-            //+ "<th>protein_pos</th>"
-            //+ "<th>coding_impact</th>"
-            //+ "<th>poclyphen</th>"
-            //+ "<th>sift</th>"
-            //+ "<th>splice_site_pred</th>"
-            //+ "<th>adviser_score</th>"
-            //+ "<th>clinvar</th>"
         + "</tr>"
         + "</thead><tbody>";
     
@@ -161,15 +150,8 @@ function table_result(data,pagesize){
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['alt']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+fgenotypes(results[i]['genotypes'], '<br>')+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'], '<br>')+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['gene']+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+display_array_element(results[i]['gene'],'<br>')+"</td>"
                 + "<td style='color:red;cursor:pointer' onclick='javascript:MoreGeneInfo("+JSON.stringify(results[i])+")'>More...</td>"
-                //+ "<td>"+results[i]['original_aa']+"</td>"
-                //+ "<td>"+results[i]['allele_aa']+"</td>"
-                //+ "<td>"+display_arry_element(results[i]['protein_pos'])+"</td>"
-                //+ "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['coding_impact']+"</td>"
-                //+ "<td style='word-break:break-all;word-wrap:break-word;'>"+display_arry_element(results[i]['polyphen'])+"</td>"
-                //+ "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['sift']+"</td>"
-                //+ "<td style='word-break:break-all;word-wrap:break-word;'>"+freqs(results[i]['allele_freqs'])+"</td>"
                 + "</tr>";
             new_table += new_tr;
             }else{
@@ -181,15 +163,8 @@ function table_result(data,pagesize){
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['alt']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+fgenotypes(results[i]['genotypes'], '<br>')+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'], '<br>')+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['gene']+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+display_array_element(results[i]['gene'],'<br>')+"</td>"
                 + "<td style='color:green;cursor:pointer;' onclick='javascript:MoreGeneInfo("+JSON.stringify(results[i])+")'>More...</td>"
-                //+ "<td>"+results[i]['original_aa']+"</td>"
-                //+ "<td>"+results[i]['allele_aa']+"</td>"
-                //+ "<td>"+display_arry_element(results[i]['protein_pos'])+"</td>"
-                //+ "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['coding_impact']+"</td>"
-                //+ "<td style='word-break:break-all;word-wrap:break-word;'>"+display_arry_element(results[i]['polyphen'])+"</td>"
-                //+ "<td style='word-break:break-all;word-wrap:break-word;'>"+results[i]['sift']+"</td>"
-                //+ "<td style='word-break:break-all;word-wrap:break-word;'>"+freqs(results[i]['allele_freqs'])+"</td>
                 + "</tr>";
             new_table += new_tr;
                 }
@@ -201,12 +176,12 @@ function table_result(data,pagesize){
 function MoreGeneInfo(gene_object){
     var chr = gene_object['chr'];  //"1",
     var pos = gene_object['pos'];  //21924946
-    var gene = gene_object["gene"]; // "RAP1GAP", 
+    var gene = display_array_element(gene_object["gene"], ","); // "RAP1GAP", 
     var vartype = gene_object['vartype'];  // "snp", 
     var genotypes = fgenotypes(gene_object['genotypes'], ', ');  // [{"count": 5,"freq": 0.025, "genotype": "T/C"}, {"count": 195, "freq": 0.975,"genotype": "T/T"}]
     var alleles = falleles(gene_object['alleles'], ', ');  // [{"allele": "C", "freq": 0.0125}, {"allele": "T", "freq": 0.9875 }]
-    var protein_pos = display_arry_element(gene_object['protein_pos'], ', ');  // ["694", "673", "635", "609"],
-    var polyphen = display_arry_element(gene_object['polyphen'], ', ');  //["possibly damaging", "probably damaging"], 
+    var protein_pos = display_array_element(gene_object['protein_pos'], ', ');  // ["694", "673", "635", "609"],
+    var polyphen = display_array_element(gene_object['polyphen'], ', ');  //["possibly damaging", "probably damaging"], 
     var sift = judge_string(gene_object['sift']); // "INTOLERANT", 
     var original_aa = judge_string(gene_object['original_aa']); //"Y", 
     var alt = judge_string(gene_object['alt']);  // "C", 
@@ -273,7 +248,7 @@ function falleles(data_arry, space_sign){
 }
 
 
-function display_arry_element(data_arry, space_sign){
+function display_array_element(data_arry, space_sign){
     if (typeof data_arry == 'undefined'){
         return "";
     }
@@ -395,3 +370,7 @@ function sortCol(n){
     });
 }
 
+function getJson(){
+    data['format'] = 'json';
+    window.location.href="/search?data="+JSON.stringify(data);
+}
