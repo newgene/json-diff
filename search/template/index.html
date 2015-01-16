@@ -37,12 +37,14 @@
         <fieldset>
         <legend style="color:white">Query Condition</legend>
         <div class="pure-control-group">
-        <label for="GENE">GENE</label>
+        <label for="GENE">by GENE</label>
         <input id="gene" name="gene" type="text" style="width:6em">
         </div>
-        <br>
         <div class="pure-control-group">
-        <label for="CHR">CHR</label>
+        <label style="font-weight:bold;color:yellow;">OR</label>
+        </div>
+        <div class="pure-control-group">
+        <label for="CHR">by CHR</label>
             <select name="genechr" id="genechr" style="width:6em">
                 <option value="-1" selected="selected">ALL</option>
                 <option value="1">1</option>
@@ -70,6 +72,7 @@
                 <option value="M">M</option>
                 <option value="X">X</option>
             </select>
+        <span name="chrerror" id="chrerror" style="color:red;display:none">**required</span>
         </div>
         <div class="pure-control-group">
         <label for="POSfrom">POS from</label>

@@ -30,8 +30,6 @@ class SearchHandler(tornado.web.RequestHandler):
         query_con = query_condition(content)
         query_url = data_web + query_con
 
-        print query_url
-
         response = urllib.urlopen(query_url)
         response_text = response.read()
         result = tornado.escape.json_decode(response_text)
@@ -42,7 +40,6 @@ class SearchHandler(tornado.web.RequestHandler):
 
         if counts:
             search_value = [ line['wellderly'] for line in result_hits ]
-            #counts = len(search_value)
             print counts
             
             nowpage = int(content['nowpage'])
@@ -114,7 +111,4 @@ def query_condition(content):
 
     return q 
 
-def query_page(nowpage, pagesize):
-    q_page = "&fields=wellderly&from=" + nowpage +"&size=" + pagesize
-    return q_page
     

@@ -5,7 +5,7 @@ $body = $("body");
 
 //contruct the Object data 
 function DataKeyValue(key, value, format){    //format is "number" or "letter"
-    var letter_number = /^([A-Za-z0-9])+$/;
+    var letter_number = /^([A-Z-a-z0-9])+$/;
     var number = /^([\0-9])+$/;
     if (format == "number") {
         var check_value = number.test(value);
@@ -33,30 +33,26 @@ $(document).ready(function(){
 
         if (gene){
             DataKeyValue('gene', gene.toUpperCase(), 'letter');
-        }else{data['gene']='-1';}
+        }else{
+            DataKeyValue('gene', '-1', 'number');
+        }
 
         if (posstart){
             DataKeyValue('posstart', posstart, 'number');
-        }else{data['posstart']='-1';}
+        }else{
+            DataKeyValue('posstart', '-1', 'number');
+        }
         
         if (posend){
             DataKeyValue('posend', posend, 'number');
-        }else{data['posend']='-1';}
+        }else{
+            DataKeyValue('posend', '-1', 'number');
+        }
         
         if (vartype != '0'){
-            data['vartype']=vartype;
+            DataKeyValue('vartype', vartype, 'letter');
         }else{
-            data['vartype']='-1';
-        }
-
-        if (posstart || posend){
-            if (chr=="-1"){
-                data['chr'] = '1';
-            }else{
-            data['chr'] = chr;
-            }
-        }else{
-            data['chr'] = chr;    
+            DataKeyValue('vartype', '-1', 'number');
         }
 
         data['pagesize'] = pagesize;
@@ -65,13 +61,29 @@ $(document).ready(function(){
         data['format'] = 'table';
         data['bysort'] = 'chr,pos';
         
-        $body.addClass("loading");
-        $.get("/search", {"data":JSON.stringify(data)}, function(e){
-            $body.removeClass("loading");
-            display_table(e, pagesize);
-        });
+        if (posstart || posend){
+            if (chr=="-1"){
+                document.getElementById("chrerror").style.display='inline';
+            }else{
+                DataKeyValue('chr', chr, 'number');
+                document.getElementById("chrerror").style.display='none';
+                $body.addClass("loading");
+                $.get("/search", {"data":JSON.stringify(data)}, function(e){
+                    $body.removeClass("loading");
+                    display_table(e, pagesize);
+                });
+            }
+        }else{
+            data['chr'] = chr;    
+            document.getElementById("chrerror").style.display='none';
+            $body.addClass("loading");
+            $.get("/search", {"data":JSON.stringify(data)}, function(e){
+                $body.removeClass("loading");
+                display_table(e, pagesize);
+            });
+        }
     })
-})
+});
 
 //judge the return data and display table
 function display_table(re_data, pagesize){            //'re_data' is the data from server
@@ -111,14 +123,14 @@ function table_result(data,pagesize){
         //+ "<table class='pure-table'>"
         + "<thead>"
         + "<tr>"
-            + "<th style='width:4em; cursor:pointer;' onclick='javascript:sortCol(0)'>chr</th>"
-            + "<th style='cursor:pointer' onclick='javascript:sortCol(1)'>pos</th>"
-            + "<th style='width:6em;cursor:pointer' onclick='javascript:sortCol(2)'>vartype</th>"
-            + "<th style='width:4em;cursor:pointer' onclick='javascript:sortCol(3)'>ref</th>"
-            + "<th style='width:4em;cursor:pointer' onclick='javascript:sortCol(4)'>alt</th>"
+            + "<th style='width:5em; cursor:pointer;' onclick='javascript:sortCol(0)' >chr&nbsp;<img src='./static/images/up.png'></th>"
+            + "<th style='cursor:pointer' onclick='javascript:sortCol(1)'>pos&nbsp;<img src='./static/images/up.png'></th>"
+            + "<th style='cursor:pointer' onclick='javascript:sortCol(2)'>gene&nbsp;<img src='./static/images/up.png'></th>"
+            + "<th style='width:7em;cursor:pointer' onclick='javascript:sortCol(3)'>vartype&nbsp;<img src='./static/images/up.png'></th>"
+            + "<th style='width:4.5em;cursor:pointer' onclick='javascript:sortCol(4)'>ref&nbsp;<img src='./static/images/up.png'></th>"
+            + "<th style='width:4.5em;cursor:pointer' onclick='javascript:sortCol(5)'>alt&nbsp;<img src='./static/images/up.png'></th>"
             + "<th style='width:9em'>genotypes</th>"
             + "<th>alleles</th>"
-            + "<th style='cursor:pointer' onclick='javascript:sortCol(7)'>gene</th>"
             + "<th style='color:blue; width:6em;'>OPTION</th>"
         + "</tr>"
         + "</thead><tbody>";
@@ -145,12 +157,12 @@ function table_result(data,pagesize){
             new_tr = "<tr class='pure-table-odd'>"
                 + "<td>"+results[i]['chr']+"</td>"
                 + "<td>"+results[i]['pos']+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+display_array_element(results[i]['gene'],'<br>')+"</td>"
                 + "<td>"+results[i]['vartype']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['ref']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['alt']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+fgenotypes(results[i]['genotypes'], '<br>')+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'], '<br>')+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+display_array_element(results[i]['gene'],'<br>')+"</td>"
                 + "<td style='color:red;cursor:pointer' onclick='javascript:MoreGeneInfo("+JSON.stringify(results[i])+")'>More...</td>"
                 + "</tr>";
             new_table += new_tr;
@@ -158,12 +170,12 @@ function table_result(data,pagesize){
             new_tr ="<tr>"
                 + "<td>"+results[i]['chr']+"</td>"
                 + "<td>"+results[i]['pos']+"</td>"
+                + "<td style='word-break:break-all;word-wrap:break-word;'>"+display_array_element(results[i]['gene'],'<br>')+"</td>"
                 + "<td>"+results[i]['vartype']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['ref']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+results[i]['alt']+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word'>"+fgenotypes(results[i]['genotypes'], '<br>')+"</td>"
                 + "<td style='word-break:break-all;word-wrap:break-word;'>"+falleles(results[i]['alleles'], '<br>')+"</td>"
-                + "<td style='word-break:break-all;word-wrap:break-word;'>"+display_array_element(results[i]['gene'],'<br>')+"</td>"
                 + "<td style='color:green;cursor:pointer;' onclick='javascript:MoreGeneInfo("+JSON.stringify(results[i])+")'>More...</td>"
                 + "</tr>";
             new_table += new_tr;
@@ -182,13 +194,15 @@ function MoreGeneInfo(gene_object){
     var alleles = falleles(gene_object['alleles'], ', ');  // [{"allele": "C", "freq": 0.0125}, {"allele": "T", "freq": 0.9875 }]
     var protein_pos = display_array_element(gene_object['protein_pos'], ', ');  // ["694", "673", "635", "609"],
     var polyphen = display_array_element(gene_object['polyphen'], ', ');  //["possibly damaging", "probably damaging"], 
-    var sift = judge_string(gene_object['sift']); // "INTOLERANT", 
-    var original_aa = judge_string(gene_object['original_aa']); //"Y", 
-    var alt = judge_string(gene_object['alt']);  // "C", 
-    var ref = judge_string(gene_object["ref"]);  // "T", 
-    var allele_aa = judge_string(gene_object["allele_aa"]);  // "C", 
-    var coding_impact = judge_string(gene_object["coding_impact"]);  // "Nonsynonymous"
-
+    var sift = display_array_element(gene_object['sift'], ', '); // "INTOLERANT", 
+    var original_aa = display_array_element(gene_object['original_aa'], ', '); //"Y", 
+    var alt = display_array_element(gene_object['alt'], ', ');  // "C", 
+    var ref = display_array_element(gene_object["ref"], ', ');  // "T", 
+    var allele_aa = display_array_element(gene_object["allele_aa"], ', ');  // "C", 
+    var coding_impact = display_array_element(gene_object["coding_impact"], ', ');  // "Nonsynonymous"
+    var splice_site_pred = display_array_element(gene_object["splice_site_prd"],', ');
+    var adviser_score = display_array_element(gene_object["adviser_score"], ', ');
+    var clinvar = display_array_element(gene_object['clinvar'], ', ');
     var innhtml = "<div background-color:white; color:black;><div style='padding:10px;'><table class='pure-table pure-table-bordered'>"
                 + "<tr><td>chr</td><td>" + chr + "</td></tr>"
                 + "<tr><td>pos</td><td>" + pos + "</td></tr>"
@@ -204,6 +218,9 @@ function MoreGeneInfo(gene_object){
                 + "<tr><td>ref</td><td>" + ref + "</td></tr>"
                 + "<tr><td>allele_aa</td><td>" + allele_aa + "</td></tr>"
                 + "<tr><td>coding_impact</td><td>" + coding_impact + "</td></tr>"
+                + "<tr><td>splice_site_pred</td><td>" + splice_site_pred + "</td></tr>"
+                + "<tr><td>adviser_score</td><td>" + adviser_score + "</td></tr>"
+                + "<tr><td>clinvar</td><td>" + clinvar + "</td></tr>"
                 + "</table></div></div>";
 
     var pagei = $.layer({
@@ -213,7 +230,7 @@ function MoreGeneInfo(gene_object){
            border: [0],
            closeBtn: [1,true],
            shadeClose: true,
-           area: ['460px', '650px'],
+           area: ['600px', '770px'],
            page: {
                  html: innhtml
                  }
@@ -247,7 +264,7 @@ function falleles(data_arry, space_sign){
     }
 }
 
-
+//display array or string in more layer
 function display_array_element(data_arry, space_sign){
     if (typeof data_arry == 'undefined'){
         return "";
@@ -267,14 +284,6 @@ function display_array_element(data_arry, space_sign){
     }
 }
 
-
-function judge_string(data_string){
-    if (typeof data_string == 'undefined'){
-        return "";
-    }else{
-        return data_string;
-    }
-}
 
 //in one page, the range of lines
 
@@ -370,7 +379,65 @@ function sortCol(n){
     });
 }
 
+//get json: the url
+
 function getJson(){
-    data['format'] = 'json';
-    window.location.href="/search?data="+JSON.stringify(data);
+    var json_url = "http://myvariant.info/v1/" + getJsonUrl(data);
+    window.location.href=json_url;
+}
+
+
+function getJsonUrl(content){
+    var q = "query?q=_exists_:wellderly";
+    
+    var gene = content['gene'];
+    var gene_chr = content['chr'];
+    var posstart = content['posstart'];
+    var posend = content['posend'];
+    var vartype = content['vartype'];
+    var sort_value = content['bysort'];
+
+    var nowpage = String(Number(content['nowpage'])-1);
+    var pagesize = content['pagesize'];
+
+    if (gene != '-1'){
+        q += " AND wellderly.gene:" + gene
+    }
+
+    if (gene_chr != '-1'){
+        q += " AND wellderly.chr:" + gene_chr
+    }
+
+    if (posstart !="-1" && posend!='-1'){
+        q += " AND wellderly.pos:[" + posstart + " TO " + posend +"]"
+    }
+    else if (posstart !='-1'){
+        q += " AND wellderly.pos:" + posstart
+    }
+    else if (posend !='-1'){
+        q += " AND wellderly.pos:" + posend
+    }
+
+    if (vartype != '-1'){
+        q += " AND wellderly.vartype:" + vartype
+    }
+
+    q += "&fields=wellderly&from=" + nowpage +"&size=" + pagesize
+
+    if (sort_value.indexOf(",")>=0){
+        var sort_lst = sort_value.split(',');
+        var wsort_lst= new Array();
+        for (var i=0; i<sort_lst.length; ++i){
+            var wx = 'wellderly.' + sort_lst[i];
+            wsort_lst.push(wx);
+        }
+        var sort_str = wsort_lst.join(',');
+    }
+    else{
+        var sort_str = 'wellderly.' + sort_value;
+    }
+    
+    q += "&sort=" + sort_str
+
+    return q;
 }
