@@ -78,8 +78,9 @@ def query_condition(content):
     vartype = content['vartype']
     sort_value = content['bysort']
 
-    nowpage = str(int(content['nowpage'])-1)
     pagesize = content['pagesize']
+    nowpage = int(content['nowpage'])
+    start_page = str((nowpage-1)*int(pagesize))
 
     if gene != '-1':
         q += " AND wellderly.gene:" + gene
@@ -99,7 +100,7 @@ def query_condition(content):
     if vartype != '-1':
         q += " AND wellderly.vartype:" + vartype
     
-    q += "&fields=wellderly&from=" + nowpage +"&size=" + pagesize
+    q += "&fields=wellderly&from=" + start_page +"&size=" + pagesize
 
     if ',' in sort_value:
         sort_lst = ['wellderly.' + v for v in sort_value.split(',')]

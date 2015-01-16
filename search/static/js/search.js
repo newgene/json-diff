@@ -397,8 +397,9 @@ function getJsonUrl(content){
     var vartype = content['vartype'];
     var sort_value = content['bysort'];
 
-    var nowpage = String(Number(content['nowpage'])-1);
+    var nowpage = Number(content['nowpage']);
     var pagesize = content['pagesize'];
+    var start_page = String((nowpage-1)*Number(pagesize));
 
     if (gene != '-1'){
         q += " AND wellderly.gene:" + gene
@@ -422,7 +423,7 @@ function getJsonUrl(content){
         q += " AND wellderly.vartype:" + vartype
     }
 
-    q += "&fields=wellderly&from=" + nowpage +"&size=" + pagesize
+    q += "&fields=wellderly&from=" + start_page +"&size=" + pagesize
 
     if (sort_value.indexOf(",")>=0){
         var sort_lst = sort_value.split(',');
