@@ -133,7 +133,7 @@ def main():
     #newdb = db.part_new
     atime = str(datetime.datetime.today())    
     
-    diff(lastdb, newdb, atime, 200)  #200: after this line ,have a rest
+    diff(lastdb, newdb, atime, rest=200)  #200: after this line ,have a rest
 
 
 if __name__=="__main__":

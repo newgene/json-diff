@@ -96,7 +96,7 @@ def main():
     #newdb = db.part_new
     diffdb = db.genechanges      #genechange是存储变更的数据的collection
 
-    merge(lastdb, newdb, diffdb, 200)
+    merge(lastdb, newdb, diffdb, rest=200)
     
     print "ok. I have finished my work."
 
