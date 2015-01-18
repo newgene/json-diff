@@ -129,14 +129,9 @@ def main():
 
     lastdb = db.genedoc_mygene_20141019_efqag2hg
     newdb = db.genedoc_mygene_20141026_g6svo5ct
-    #lastdb = db.part_old
-    #newdb = db.part_new
     atime = str(datetime.datetime.today())    
     
     diff(lastdb, newdb, atime)
-
-    print "ok."
-
 
 if __name__=="__main__":
     start = time.clock()

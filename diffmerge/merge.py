@@ -92,8 +92,7 @@ def main():
     
     lastdb = db.genedoc_mygene_20141019_efqag2hg
     newdb = db.genedoc_mygene_20141026_g6svo5ct
-    #lastdb = db.part_old
-    #newdb = db.part_new
+    
     diffdb = db.genechanges      #genechange是存储变更的数据的collection
 
     merge(lastdb, newdb, diffdb)
