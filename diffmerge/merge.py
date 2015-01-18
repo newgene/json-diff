@@ -20,7 +20,7 @@ sys.setdefaultencoding("utf-8")
 #另外一种情况是直接连接数据库导入到新的数据
 #注意，有一个新的genediff_jobs表，根据这个表从genenchanges表中导入新的内容。
 
-def merge(lastdb, newdb, diffdb):
+def merge(lastdb, newdb, diffdb, rest=200):
     """
     lastdb: the old gene database
     newdb: the new gene database
@@ -41,7 +41,7 @@ def merge(lastdb, newdb, diffdb):
             lastdb.insert(gene['value'])
             merge_num += 1
             have_a_rest += 1
-            if have_a_rest == 200:
+            if have_a_rest == rest:
                 time.sleep(1)
                 have_a_rest = 0
 
@@ -51,7 +51,7 @@ def merge(lastdb, newdb, diffdb):
             lastdb.remove({"_id":i})
             merge_num += 1
             have_a_rest += 1
-            if have_a_rest == 200:
+            if have_a_rest == rest:
                 time.sleep(1)
                 have_a_rest = 0
 
@@ -67,7 +67,7 @@ def merge(lastdb, newdb, diffdb):
                     lastdb.update({"_id":i}, new_gene)
                     merge_num += 1
                     have_a_rest += 1
-                    if have_a_rest == 200:
+                    if have_a_rest == rest:
                         time.sleep(1)
                         have_a_rest = 0
                 except:
@@ -80,7 +80,7 @@ def merge(lastdb, newdb, diffdb):
             lastdb.update({"_id":i}, new_gene)
             merge_num += 1
             have_a_rest += 1
-            if have_a_rest == 200:
+            if have_a_rest == rest:
                 time.sleep(1)
                 have_a_rest = 0
     
@@ -96,7 +96,7 @@ def main():
     #newdb = db.part_new
     diffdb = db.genechanges      #genechange是存储变更的数据的collection
 
-    merge(lastdb, newdb, diffdb)
+    merge(lastdb, newdb, diffdb, 200)
     
     print "ok. I have finished my work."
 

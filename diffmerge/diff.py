@@ -14,7 +14,7 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 sys.setrecursionlimit(3500)
 
-def diff(lastdb, newdb, ttime, ignore=None):
+def diff(lastdb, newdb, ttime, ignore=None, rest=200):
     
     """
     find the difference between the two JSONs.
@@ -66,7 +66,7 @@ def diff(lastdb, newdb, ttime, ignore=None):
             one_gene = newdb.find_one( {"_id":i} )
             db_change.insert( {"gene_id":i, "stat":"add", "value":one_gene, "timestamp":timestamp} )
             have_a_rest +=1
-            if have_a_rest == 200:
+            if have_a_rest == rest:
                 time.sleep(1)
                 have_a_rest = 0
     else:
@@ -80,7 +80,7 @@ def diff(lastdb, newdb, ttime, ignore=None):
             one_gene = lastdb.find_one( {"_id":i} )
             db_change.insert( {"gene_id":i, "stat":"remove", "timestamp":timestamp} )
             have_a_rest +=1
-            if have_a_rest == 200:
+            if have_a_rest == rest: 
                 time.sleep(1)
                 have_a_rest = 0
     else:
@@ -109,7 +109,7 @@ def diff(lastdb, newdb, ttime, ignore=None):
                 db_change.insert( {"gene_id":i, "stat":"replace", "value":diff_lst, "timestamp":timestamp} )
                 replace_count +=1
                 have_a_rest +=1
-                if have_a_rest == 200:
+                if have_a_rest == rest:
                     time.sleep(1)
                     have_a_rest = 0
 
@@ -133,9 +133,7 @@ def main():
     #newdb = db.part_new
     atime = str(datetime.datetime.today())    
     
-    diff(lastdb, newdb, atime)
-
-    print "ok."
+    diff(lastdb, newdb, atime, 200)  #200: after this line ,have a rest
 
 
 if __name__=="__main__":
