@@ -4,12 +4,14 @@
 import requests
 from bs4 import BeautifulSoup   # install BeautifulSoup: pip install beautifulsoup4
 
+import json
+#import csv
+
 class ScratchData():
 
-    def __init__(self, version, url, logs):
+    def __init__(self, version, url):
         self.version = version
         self.url = url
-        self.logs = logs
 
     def scratchTable(self):
         """
@@ -18,33 +20,32 @@ class ScratchData():
         r = requests.get(self.url)
         html_doc = r.text
         soup = BeautifulSoup(html_doc)
-        anno_title = str(soup.title.string)
-        table_content = soup.find_all("div", class_="do_not_rebase")
-        tr_content = table_content[0].find_all("tr")
+        table_content = soup.find("div", class_="do_not_rebase").find("table").find_all("tr")
+        log_lst = []
+        for line in table_content:
+            log_dict = {}
+            table_text = [unicode(block.string) for block in line.children]
+            log_dict['package'] = table_text[1]
+            log_dict['title'] = table_text[5]
+            for link in line.find_all('a'):
+                log_dict['package_link'] = unicode(link.get('href'))
+            log_lst.append(log_dict)
+        return log_lst[1:]
 
-        #f = open(self.logs,"w")
-
-        for line in tr_content:
-            web_link = [link.get('href') for link in line.find_all('a')]
-            td_lst = line.find_all("td")
-            package_lst = [str(block.string) for block in td_lst]
-            
-            #f.write(web_link+'\t'+db_package+"\t"+db_title)
-        #f.close()
-
-    
-    def writeLogs(self):
+    def writeLogs(self, logfile):
         """
         write logs
         """
-        pass
-    
+        content = self.scratchTable()
+        with open(logfile, "wb") as lf:
+            lf.write(json.dumps(content))
+
     def downLoadFiles(self, restore_dir):
         """
         download the file by the link in the logs
         """
         pass
-    
+
 
     def unzipFile(self):
         """
