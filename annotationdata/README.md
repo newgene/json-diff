@@ -9,9 +9,10 @@ Before you run this program, make a directory for saveing the packages data and 
 You also have to name the directory and log file.
 
 You should set up `url`,`db_dir`,`log_file` in `application.py`,
+
 Then run `python application.py`
 
-Author: qiwsir
-Program Language: Python
-E-MAIL: qiwsir(at)gmail.com
-website: www.itdiffer.com
+    Author: qiwsir
+    Program Language: Python
+    E-MAIL: qiwsir(at)gmail.com
+    website: www.itdiffer.com
