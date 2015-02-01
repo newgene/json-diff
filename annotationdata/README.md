@@ -1,0 +1,14 @@
+Please make sure you have installed thes module:
+
+- requests. If not: pip install requests
+- BeautifulSoup. If not: pip install beautifulsoup4
+- wget. If not: pip install wget
+
+Before you run this program, make a directory for saveing the packages data and csv file.
+
+You also have to name the directory and log file.
+
+Author: qiwsir
+Program Language: Python
+E-MAIL: qiwsir(at)gmail.com
+website: www.itdiffer.com
