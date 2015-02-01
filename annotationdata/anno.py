@@ -73,7 +73,8 @@ class ScratchData(object):
             out_dir += "/"
         
         file_name_lst = []
-        for p_url in packages_link[1:3]:
+        #for p_url in packages_link[1:3]:   #you can limit some of the packages.
+        for p_url in packages_link:
             print "downloading:\n"
             file_name = wget.download(str(p_url), out=out_dir)
             file_name_lst.append(file_name)
