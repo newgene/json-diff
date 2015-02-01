@@ -7,16 +7,22 @@ from sqlite import *
 def main():
     url = "http://bioconductor.org/packages/3.0/data/annotation/"
     db_dir = "/home/qw/Documents/Newgene/json-diff/annotationdata/db/"
+    
     log_file = "/home/qw/Documents/Newgene/json-diff/log.csv"
-    #scratch = ScratchData(3, url, db_dir)
-    #scratch.writeLogs(log_file)
-    #scratch.writeLogs("log.txt")
-    #scratch.downloadPackage("/home/qw/Documents/Newgene/json-diff/annotationdata/db/")
-    store_sql = StoreSqlite(version = 3, download_url=url,db_directory=db_dir,store_dir= db_dir)
-    #sqlites_dir = store_sql.storeSqlite()
-    #store_sql.writeLogs(log_file)
-    store_sql.listSqliteName()
-    #print sqlites_dir
+    """
+    scratch the data from webpage(url) and download the *.gz files.
+    all the files is .db
+    unzip all of the *.gz
+    """
+    scratch = ScratchData(url, db_dir)
+    scratch.unzipFile()
+    
+    """
+    store the sqlite into a csv file.
+    write log file.
+    """
+    store_sql = StoreSqlite(download_url=url,db_directory=db_dir,store_dir= db_dir)
+    store_sql.writeLog(log_file)
 
 if __name__ == "__main__":
     main()

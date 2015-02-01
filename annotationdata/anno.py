@@ -6,12 +6,9 @@ from bs4 import BeautifulSoup   # install BeautifulSoup: pip install beautifulso
 import tarfile
 import wget
 
-import csv
-
 class ScratchData(object):
 
-    def __init__(self, version, download_url, db_directory):
-        self.version = version
+    def __init__(self, download_url, db_directory):
         self.url = download_url
         self.db_dir = db_directory
 
