@@ -6,6 +6,7 @@ constant
 """
 
 GZPACKAGE_DIR = './gzpackages'
-EXTRACTED_DIR = './gzextract'
+EXTRACTED_DIR = './db'
+#EXTRACTED_DIR = './gzextract'
 CSVFILES_DIR = './csvfiles'
 LOG = './log.csv'

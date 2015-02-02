@@ -15,15 +15,14 @@ def main():
     get the data from webpage(url) and download the *.gz files.
     the extension all the packages is '.db'.
     """
-    scratch = ScratchData(url)
-    scratch.downloadPackage()   #download packages from website.
-    scratch.extractGzFiles()    #extract the .gz files.
-    #print result
+    #scratch = ScratchData(url)
+    #scratch.downloadPackage()   #download packages from website.
+    #scratch.extractGzFiles()    #extract the .gz files.
 
-    #scratch.unzipFile()  # extract '.gz' files
 
-    #store_sql = StoreSqlite(download_url=url,db_directory=db_dir,store_dir= db_dir)
-    #store_sql.storeSqlite()     # write data into '.csv' files
+    store_sql = StoreSqlite()
+    res = store_sql.storeSqlite()     # write data into '.csv' files
+    print res
     #store_sql.writeLog(log_file)    # write log file
 
 if __name__ == "__main__":
