@@ -6,15 +6,22 @@ from bs4 import BeautifulSoup   # install BeautifulSoup: pip install beautifulso
 import tarfile
 import wget
 
+import os
+import os.path
+
+from setting import *
+
 class ScratchData(object):
     """
     get Bioconductor AnnotationData Packages from the website of Bioconductor
     for example, Bioconductor 3.0, the url is http://www.bioconductor.org/packages/3.0/data/annotation/
     """
 
-    def __init__(self, download_url, db_directory):
+    def __init__(self, download_url, gz_dir=GZPACKAGE_DIR, ex_dir=EXTRACTED_DIR, log=LOG):
         self.url = download_url
-        self.db_dir = db_directory
+        self.gz_dir = gz_dir
+        self.ex_dir = ex_dir
+        self.log = log
 
     def scratchTable(self):
         """
@@ -61,7 +68,10 @@ class ScratchData(object):
         """
         source_link = self.usefulTable()
         db_link = [element['package_link'] for element in source_link ]
-        link = [self.url + '/' + str(short_link) for short_link in db_link]
+        
+        header_url = self.url+'/' if self.url[-1] != '/' else self.url
+
+        link = [header_url + str(short_link) for short_link in db_link]
         file_link = []
 
         for dl_link in link:
@@ -69,49 +79,78 @@ class ScratchData(object):
             dl_html = dr.text
             soup = BeautifulSoup(dl_html)
             gz_link = soup.find("div", class_="do_not_rebase").find_all("table")[2].find_all('td')[1].a.get('href')
-            all_link = self.url + "".join(list(gz_link)[2:])
+            all_link = self.url + "".join(list(gz_link)[2:])    # complete URL of every .gz package.
             file_link.append(all_link)
+        
         return file_link
+    
+    def makeDir(self, directory):
+        """
+        if the directory do not exists, make it.
+        """
+        have_dir = os.path.exists(directory)
+        if not have_dir:
+            os.makedirs(directory)
+    
+    def checkPackage(self, directory):
+        files_lst = os.listdir(directory)
+        if files_lst:
+            return files_lst
+        else:
+            return False 
 
     def downloadPackage(self):
         """
         download the packages(.gz) from their URL
         """
         packages_link = self.packageFilesUrl()
+        
+        self.makeDir(self.gz_dir)  # check self.gz_dir
+        
+        out_dir = self.gz_dir[0:-1] if self.gz_dir[-1] == '/' else self.gz_dir
+        
+        #check in the self.gz_dir,is there some package? if ok,then will not download them.
+        
+        have_packages = self.checkPackage(self.gz_dir)
+        if have_packages:
+            for have_name in have_packages:
+                for every_url in packages_link:
+                    package_url, will_name = os.path.split(every_url)
+                    if will_name == have_name:
+                        packages_link.remove(every_url)
 
-        out_dir = self.db_dir
-        if out_dir[-1] != '/':
-            out_dir += "/"
-
-        file_name_lst = []
-        #for p_url in packages_link[1:3]:   #you can limit some of the packages.
-        for p_url in packages_link:
-            print "downloading:\n"
+        dir_gzfiles = []
+        for p_url in packages_link[0:3]:   #you can limit some of the packages.
+        #for p_url in packages_link:
+            print "\ndownloading:"
             file_name = wget.download(str(p_url), out=out_dir)
-            file_name_lst.append(file_name)
+            dir_gzfiles.append(file_name)
+        
+        download_number = len(dir_gzfiles)
+        print "\nHave downloaded .gz packages: ", download_number
+        print "\n",dir_gzfiles
         print "\nended download."
 
-        return file_name_lst
 
-
-    def unzipFile(self):
+    def extractGzFiles(self):
         """
         extract the packages with '.gz' as their extension
         """
-        gz_files = self.downloadPackage()
+        
+        try:
+            gz_files = os.listdir(self.gz_dir)
+            gz_dir = self.gz_dir+'/' if self.gz_dir[-1] != '/' else self.gz_dir 
+            gz_files = [gz_dir+gz_name for gz_name in gz_files]
+            
+            print "extract the file(*.gz)"
 
-        db_dir = self.db_dir
+            for filename in gz_files:
+                tar = tarfile.open(filename)
+                tar.extractall(path=self.ex_dir)
+                tar.close()
 
-        if db_dir[-1] != '/':
-            db_dir += '/'
+            print "have extracted the files into directory: ", self.ex_dir
 
-        print "unzip the file(*.gz)"
+        except:
+            print "There is no .gz Packages. Please download it firltly."
 
-        for filename in gz_files:
-            #path_filename = db_dir + filename
-            path_filename = filename
-            tar = tarfile.open(path_filename)
-            tar.extractall(path=db_dir)
-            tar.close()
-
-        return gz_files
