@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup   # install BeautifulSoup: pip install beautifulsoup4
 import tarfile
 import wget
-
+import csv
 import os
 import os.path
 
@@ -59,6 +59,12 @@ class ScratchData(object):
             if "." in package_name:
                 if package_name.split('.')[1] == 'db':
                     todo_lst.append(line)
+        
+        #write them into a tmplog.csv file.
+        with open("tmplog.csv",'wb') as csv_file:
+            writer = csv.writer(csv_file, delimiter='\t')
+            for line in todo_lst:
+                writer.writerow((line['package'], line['title']))
 
         return todo_lst
 
@@ -84,13 +90,6 @@ class ScratchData(object):
         
         return file_link
     
-    def makeDir(self, directory):
-        """
-        if the directory do not exists, make it.
-        """
-        have_dir = os.path.exists(directory)
-        if not have_dir:
-            os.makedirs(directory)
     
     def checkPackage(self, directory):
         files_lst = os.listdir(directory)
@@ -105,7 +104,7 @@ class ScratchData(object):
         """
         packages_link = self.packageFilesUrl()
         
-        self.makeDir(self.gz_dir)  # check self.gz_dir
+        makeDir(self.gz_dir)  # check self.gz_dir
         
         out_dir = self.gz_dir[0:-1] if self.gz_dir[-1] == '/' else self.gz_dir
         
@@ -120,7 +119,7 @@ class ScratchData(object):
                         packages_link.remove(every_url)
 
         dir_gzfiles = []
-        for p_url in packages_link[0:3]:   #you can limit some of the packages.
+        for p_url in packages_link[0:1]:   #you can limit some of the packages.
         #for p_url in packages_link:
             print "\ndownloading:"
             file_name = wget.download(str(p_url), out=out_dir)
@@ -129,7 +128,7 @@ class ScratchData(object):
         download_number = len(dir_gzfiles)
         print "\nHave downloaded .gz packages: ", download_number
         print "\n",dir_gzfiles
-        print "\nended download."
+        print "\nended download. the packages are in ", self.gz_dir
 
 
     def extractGzFiles(self):
@@ -143,7 +142,7 @@ class ScratchData(object):
             gz_files = [gz_dir+gz_name for gz_name in gz_files]
             
             print "extract the file(*.gz)"
-
+            makeDir(self.ex_dir)
             for filename in gz_files:
                 tar = tarfile.open(filename)
                 tar.extractall(path=self.ex_dir)

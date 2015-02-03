@@ -16,13 +16,14 @@ def main():
     the extension all the packages is '.db'.
     """
     #scratch = ScratchData(url)
-    #scratch.downloadPackage()   #download packages from website.
+    #scratch.usefulTable()
+   # scratch.downloadPackage()   #download packages from website.
     #scratch.extractGzFiles()    #extract the .gz files.
 
 
     store_sql = StoreSqlite()
-    res = store_sql.storeSqlite()     # write data into '.csv' files
-    print res
+    store_sql.storeSqlite()     # write data into '.csv' files
+    #print res
     #store_sql.writeLog(log_file)    # write log file
 
 if __name__ == "__main__":
