@@ -119,8 +119,7 @@ class ScratchData(object):
                         packages_link.remove(every_url)
 
         dir_gzfiles = []
-        for p_url in packages_link[0:1]:   #you can limit some of the packages.
-        #for p_url in packages_link:
+        for p_url in packages_link:   #you can limit some of the packages.
             print "\ndownloading:"
             file_name = wget.download(str(p_url), out=out_dir)
             dir_gzfiles.append(file_name)
