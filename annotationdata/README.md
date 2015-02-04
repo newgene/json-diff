@@ -3,6 +3,7 @@ Please make sure you have installed thes module:
 - requests. If not: `pip install requests`
 - BeautifulSoup. If not: `pip install beautifulsoup4`
 - wget. If not: `pip install wget`
+- sqlite3. 
 
 Before you run this program, make a directory for saveing the packages data and csv file.
 
