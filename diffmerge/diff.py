@@ -1,4 +1,4 @@
-#! /usr/bin/env python 
+#! /usr/bin/env python
 #coding:utf-8
 
 from method import diffmethod
@@ -14,8 +14,8 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 sys.setrecursionlimit(3500)
 
-def diff(lastdb, newdb, ttime, ignore=None):
-    
+def diff(lastdb, newdb, ttime, ignore=None, rest=200):
+
     """
     find the difference between the two JSONs.
     lastdb: old collection
@@ -27,10 +27,10 @@ def diff(lastdb, newdb, ttime, ignore=None):
     else:
         timestamp = str(ttime).split(".")[0]
 
-    
+
     gene_last = [ ele["_id"] for ele in lastdb.find({},{'_id':1}) ]
     gene_new = [ ele["_id"] for ele in newdb.find({},{'_id':1}) ]
-    
+
     gene_last_count = len(list(gene_last))
     gene_new_count = len(list(gene_new))
 
@@ -40,20 +40,20 @@ def diff(lastdb, newdb, ttime, ignore=None):
     gene_last_name = oldname["collection"]
     gene_new_name = newname["collection"]
     if ignore:
-        db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count}, 
+        db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count},
                         "newdb":{"name":gene_new_name, "count":gene_new_count},
                         "timestamp":timestamp,
                         "extra_parameters":ignore
                         })
     else:
-        db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count}, 
+        db_logs.insert({"olddb":{"name":gene_last_name, "count":gene_last_count},
                         "newdb":{"name":gene_new_name, "count":gene_new_count},
                         "timestamp":timestamp,
                         })
 
 
     geneid = diffmethod.OptLst(gene_last, gene_new)
-    
+
     add_gene = geneid.addLst()              #the list consisting of the IDs in the new collection different from the IDs in the old one
     shared_gene = geneid.shareLst()         #the list consisting of the IDs in the new collection same as the IDs in the old one
     deleted_gene = geneid.deleLst()         #the list consisting of the IDs in the old collection but not in the new collection
@@ -66,13 +66,13 @@ def diff(lastdb, newdb, ttime, ignore=None):
             one_gene = newdb.find_one( {"_id":i} )
             db_change.insert( {"gene_id":i, "stat":"add", "value":one_gene, "timestamp":timestamp} )
             have_a_rest +=1
-            if have_a_rest == 200:
+            if have_a_rest == rest:
                 time.sleep(1)
                 have_a_rest = 0
     else:
         add_count = 0
 
-    #store the deleted IDs        
+    #store the deleted IDs
     if deleted_gene:
         have_a_rest = 0
         remove_count = len(deleted_gene)
@@ -80,7 +80,7 @@ def diff(lastdb, newdb, ttime, ignore=None):
             one_gene = lastdb.find_one( {"_id":i} )
             db_change.insert( {"gene_id":i, "stat":"remove", "timestamp":timestamp} )
             have_a_rest +=1
-            if have_a_rest == 200:
+            if have_a_rest == rest:
                 time.sleep(1)
                 have_a_rest = 0
     else:
@@ -94,7 +94,7 @@ def diff(lastdb, newdb, ttime, ignore=None):
             ign_dict = dict( (el, 0) for el in ignore )
         else:
             ign_dict = {}
-        
+
         for i in shared_gene:
             if ign_dict:
                 last_content = lastdb.find_one( {"_id":i}, ign_dict )
@@ -102,20 +102,20 @@ def diff(lastdb, newdb, ttime, ignore=None):
             else:
                 last_content = lastdb.find_one( {"_id":i} )
                 new_content = newdb.find_one( {"_id":i} )
-            
+
             if cmp(last_content, new_content) !=0:
                 patch = jsonpatch.JsonPatch.from_diff(last_content, new_content)
                 diff_lst = list(patch)
                 db_change.insert( {"gene_id":i, "stat":"replace", "value":diff_lst, "timestamp":timestamp} )
                 replace_count +=1
                 have_a_rest +=1
-                if have_a_rest == 200:
+                if have_a_rest == rest:
                     time.sleep(1)
                     have_a_rest = 0
 
     else:
         replace_count = 0
-    
+
     #保存日志信息
     total = replace_count + remove_count + add_count
     stat = {"remove":remove_count, "add":add_count, "replace":replace_count, "total":total}
@@ -123,19 +123,20 @@ def diff(lastdb, newdb, ttime, ignore=None):
 
 
 def main():
-    
+
     print ">>>Hi, I am Qiwei. Welcome to my website: www.itdiffer.com<<<"
     print "I am working like a horse. You may have a rest and I will send you the result after a while."
 
     lastdb = db.genedoc_mygene_20141019_efqag2hg
     newdb = db.genedoc_mygene_20141026_g6svo5ct
-    atime = str(datetime.datetime.today())    
-    
-    diff(lastdb, newdb, atime)
+    atime = str(datetime.datetime.today())
+
+    #diff(lastdb, newdb, atime)
+    diff(lastdb, newdb, atime, rest=200)  #200: after this line ,have a rest
 
 if __name__=="__main__":
     start = time.clock()
-    
+
     main()
 
     print "The time I have spent is:"

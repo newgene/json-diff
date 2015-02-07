@@ -20,7 +20,9 @@
 
     <!--link rel="stylesheet" type="text/css" href="{{static_url("css/style.css")}}"/-->
      
-    <script type="text/javascript" src="{{static_url("js/jquery.min.js")}}"></script>
+    <!--script type="text/javascript" src="{{static_url("js/jquery.min.js")}}"></script-->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{static_url("js/layer.min.js")}}"></script>
     
 </head>
 
@@ -35,9 +37,17 @@
         <fieldset>
         <legend style="color:white">Query Condition</legend>
         <div class="pure-control-group">
-        <label for="CHR">(required*) CHR</label>
+        <label for="GENE">by GENE</label>
+        <input id="gene" name="gene" type="text" style="width:6em">
+        </div>
+        <div class="pure-control-group">
+        <label style="font-weight:bold;color:yellow;">OR</label>
+        </div>
+        <div class="pure-control-group">
+        <label for="CHR">by CHR</label>
             <select name="genechr" id="genechr" style="width:6em">
-                <option value="1" selected="selected">1</option>
+                <option value="-1" selected="selected">ALL</option>
+                <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
@@ -64,6 +74,9 @@
             </select>
         </div>
         <div class="pure-control-group">
+        <label name="chrerror" id="chrerror" style="color:red;display:none">**CHR is required</label>
+        </div>
+        <div class="pure-control-group">
         <label for="POSfrom">POS from</label>
         <input id="posstart" name="posstart" type="text" style="width:6em">
         </div>
@@ -71,6 +84,7 @@
         <label for="POSto">to</label>
         <input id="posend" name="posend" type="text" style="width:6em">
         </div>
+        <br>
         <div class="pure-control-group">
         <label for="VARTYPE">VARTYPE</label>
             <select id="vartype" name="vartype" style="width:6em">
@@ -80,6 +94,7 @@
                 <option value="snp">snp</option>
             </select>
         </div>
+        <br>
         <div class="pure-control-group">
         <input type="button" class="pure-button pure-button-primary" style="margin-left:8em;width:10em" id="search" name="search" value="Query">
         </div>
